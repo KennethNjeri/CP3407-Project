@@ -1,3 +1,5 @@
+
+
 ## User Stories
 
 ## User Registration | Priority: High | Estimate: 2 days
@@ -40,5 +42,5 @@ Description: As a customer, I want to track my order status in real time so that
 
 Description: As a restaurant owner, I want to add, update, or remove menu items so that customers always see accurate information.
 
-https://github.com/KoenMeecham/CP3407-Project/issues/1
-https://github.com/users/KoenMeecham/projects/issues/1
+// go to the issue click on it, three dots/ copy link in projecy
+https://github.com/users/KoenMeecham/projects/1/views/1?pane=issue&itemId=157952502&issue=KoenMeecham%7CCP3407-Project%7C3
