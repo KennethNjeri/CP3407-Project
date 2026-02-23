@@ -1,5 +1,4 @@
-Create more md files like this one as needed. Place them into the same folder 
-as this [user_stories folder](./)
+
 
 # User story title: Create an Orders page
 Other versions: View orders, Order history, My orders page
