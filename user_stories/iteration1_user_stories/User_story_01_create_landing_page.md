@@ -1,5 +1,3 @@
-Create more md files like this one as needed. Place them into the same folder 
-as this [user_stories folder](./)
 
 # User story title: Create a Basic Landing Page
 Other versions: Landing page, Home page, Main page, Start page
