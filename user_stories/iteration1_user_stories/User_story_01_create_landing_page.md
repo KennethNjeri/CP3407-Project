@@ -6,7 +6,7 @@ Other versions: Landing page, Home page, Main page, Start page
 ## Priority: 10 (e.g. latest for iteration-1)
 Priority Notes:
 Iteration 1 – Must-have for MVP (first impression + navigation entry point)
-Iteration 2 – Add testimonials, promotions, more polish
+
 
 
 ## Estimation: 1 day
@@ -25,11 +25,6 @@ Any notes on estimation go here. Keep your planning poker game numbers. For exam
 ## Description: e.g. The web page will show current deals to Orion's orbits users
 The website will provide a clean landing page that introduces FoodPandas and lets users navigate to key areas.
 
-Description-v1:
-Create a basic landing page with branding and navigation links.
-
-Description-v2:
-Landing page includes hero section, call-to-action buttons, and quick links to search and login.
 
 
 ## Tasks, see chapter 4.
