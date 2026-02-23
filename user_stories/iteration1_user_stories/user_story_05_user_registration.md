@@ -5,7 +5,7 @@ Priority Notes:
 Iteration 1 – Registration + login using secure hashing + sessions/JWT
 
 ## Estimation: 2 days
-Planning Poker:
+Planning Poker:  
 Ty: 2 days  
 Scott: 3 days  
 Koen: 2 days  
