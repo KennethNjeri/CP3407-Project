@@ -21,10 +21,10 @@ Users can view a restaurant’s menu with prices and images so they can decide w
 
 
 ## Tasks:
-Task 1 – Design menu UI layout, Estimation 0.5 days
-Task 2 – Create backend menu API, Estimation 0.5 days
-Task 3 – Display menu items with prices, Estimation 0.5 days
-Task 4 – Add image upload/display support, Estimation 0.5 days
+Task 1 – Design menu UI layout, Estimation 0.5 days  
+Task 2 – Create backend menu API, Estimation 0.5 days  
+Task 3 – Display menu items with prices, Estimation 0.5 days  
+Task 4 – Add image upload/display support, Estimation 0.5 days  
 
 
 
