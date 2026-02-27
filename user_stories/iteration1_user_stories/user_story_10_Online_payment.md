@@ -2,6 +2,7 @@
 # User story title: Online Payment
 Other versions: Pay online, Card payment, Secure checkout payment
 
+https://github.com/KoenMeecham/CP3407-Project/issues/10#issue-3956097161
 
 ## Priority: 20 
 Priority Notes:
