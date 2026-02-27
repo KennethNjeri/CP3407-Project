@@ -11,14 +11,15 @@ app.use(express.json());
 const PORT = process.env.PORT || 5000;
 
 // ✅ Connect to MySQL using environment variables
-const connection = mysql.createConnection({
-  host: process.env.DB_HOST,     // uses your RDS host
-  user: process.env.DB_USER,     // uses admin
+const db = mysql.createConnection({
+  host: process.env.DB_HOST,     // RDS host
+  user: process.env.DB_USER,     // admin
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
   port: 3306                     // default MySQL port
 });
 
+// ✅ Actually connect to the database
 db.connect((err) => {
   if (err) {
     console.error("Database connection failed:", err);
@@ -69,7 +70,7 @@ app.get("/api/restaurants/search", (req, res) => {
   );
 });
 
-// ✅ Only one listen
+// ✅ Start server
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on port ${PORT}`);
 });
