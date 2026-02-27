@@ -2,8 +2,8 @@
 # User story title: Create a Basic Landing Page
 Other versions: Landing page, Home page, Main page, Start page
 
-https://github.com/KoenMeecham/CP3407-Project/issues/3#issue-3956024487
-
+Main issue - https://github.com/KoenMeecham/CP3407-Project/issues/3#issue-3956024487  
+Sub issue - https://github.com/KoenMeecham/CP3407-Project/issues/18
 
 ## Priority: 10 (e.g. latest for iteration-1)
 Priority Notes:
