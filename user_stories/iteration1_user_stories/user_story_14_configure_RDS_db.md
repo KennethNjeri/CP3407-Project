@@ -1,12 +1,13 @@
 ## User story title: Provision and configure Amazon RDS database  
 
+https://github.com/KoenMeecham/CP3407-Project/issues/17#issue-3998972078
+
 Keep any other version here as well, e.g. Setup AWS RDS instance, Create cloud-hosted relational database.
 
 ## Priority: 10
 
 Required before backend integration.  
-Enables cloud-hosted relational persistence for Iteration-1 MVP.  
-Required to demonstrate use of modern cloud services (HD criteria).  
+Enables cloud-hosted relational persistence for Iteration-1 MVP.   
 
 ## Estimation: 3 days
 
@@ -37,5 +38,3 @@ Task 5, Estimation 0.5 days: Test connectivity from backend and verify CRUD oper
 
 ## Completed:
 
-
-UI Design:
