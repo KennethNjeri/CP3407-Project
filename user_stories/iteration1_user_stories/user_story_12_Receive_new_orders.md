@@ -1,12 +1,7 @@
-
-
-Create more md files like this one as needed. Place them into the same folder 
-as this [user_stories folder](./)
-
 # User story title: Receive New Orders
 Other versions: Restaurant order dashboard, Manage incoming orders, Handle customer orders
 
-
+https://github.com/KoenMeecham/CP3407-Project/issues/15#issue-3956144059
 
 ## Priority: 10 (e.g. latest for iteration-1)
 Iteration 1 – Basic dashboard + accept/reject order
