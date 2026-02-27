@@ -1,10 +1,7 @@
-
-Create more md files like this one as needed. Place them into the same folder 
-as this [user_stories folder](./)
-
 # User story title: Browse Restaurants
 Other versions: View restaurant listings, Display available restaurants, Explore restaurants
 
+https://github.com/KoenMeecham/CP3407-Project/issues/13#issue-3956141413
 
 ## Priority: 10 (e.g. latest for iteration-1)
 Iteration 1 – Basic listing page
