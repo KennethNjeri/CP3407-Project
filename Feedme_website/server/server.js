@@ -32,44 +32,46 @@ db.connect((err) => {
 
 // ================= API ROUTES =================
 
-// Get restaurants with pagination
+// Get restaurants (with optional search)
 app.get("/api/restaurants", (req, res) => {
+  const search = req.query.q;
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 50;
   const offset = (page - 1) * limit;
 
-  db.query("SELECT COUNT(*) as count FROM Restaurants", (err, countResult) => {
-    if (err) return res.status(500).json(err);
-    const total = countResult[0].count;
+  let baseQuery = "FROM Restaurants";
+  let params = [];
 
+  // If searching
+  if (search && search.trim() !== "") {
+    baseQuery += " WHERE name LIKE ? OR category LIKE ? OR city LIKE ?";
+    const q = `%${search}%`;
+    params.push(q, q, q);
+  }
+
+  // First get total count
+  db.query(`SELECT COUNT(*) as count ${baseQuery}`, params, (err, countResult) => {
+    if (err) return res.status(500).json(err);
+
+    const total = countResult[0].count;
+    const totalPages = Math.ceil(total / limit);
+
+    // Then get actual data
     db.query(
-      "SELECT * FROM Restaurants LIMIT ? OFFSET ?",
-      [limit, offset],
+      `SELECT * ${baseQuery} ORDER BY name ASC LIMIT ? OFFSET ?`,
+      [...params, limit, offset],
       (err, results) => {
         if (err) return res.status(500).json(err);
 
         res.json({
           page,
-          totalPages: Math.ceil(total / limit),
+          totalPages,
           totalRestaurants: total,
-          restaurants: results,
+          restaurants: results
         });
       }
     );
   });
-});
-
-// Search restaurants
-app.get("/api/restaurants/search", (req, res) => {
-  const q = `%${req.query.q}%`;
-  db.query(
-    "SELECT * FROM Restaurants WHERE name LIKE ? OR category LIKE ?",
-    [q, q],
-    (err, results) => {
-      if (err) return res.status(500).json(err);
-      res.json(results);
-    }
-  );
 });
 
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import "./App.css";
 
@@ -7,47 +7,55 @@ export default function Restaurants() {
   const [params, setParams] = useSearchParams();
 
   const q = (params.get("q") || "").trim();
+  const page = Number(params.get("page") || 1);
+
   const [search, setSearch] = useState(q);
   const [restaurants, setRestaurants] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [totalPages, setTotalPages] = useState(1);
 
-  // keep input synced when URL changes
-  useEffect(() => setSearch(q), [q]);
+  // Keep input synced when URL changes
+  useEffect(() => {
+    setSearch(q);
+  }, [q]);
 
+  // Fetch restaurants whenever search or page changes
   useEffect(() => {
     const load = async () => {
       try {
         setLoading(true);
-        // If your backend URL is different, change this:
-        const res = await fetch("/api/restaurants");
+
+        const query = new URLSearchParams();
+        if (q) query.append("q", q);
+        query.append("page", page);
+        query.append("limit", 20);
+
+        const res = await fetch(`/api/restaurants?${query.toString()}`);
         const data = await res.json();
-        setRestaurants(Array.isArray(data) ? data : []);
-      } catch (e) {
-        console.error(e);
+
+        setRestaurants(data.restaurants || []);
+        setTotalPages(data.totalPages || 1);
+      } catch (err) {
+        console.error(err);
         setRestaurants([]);
       } finally {
         setLoading(false);
       }
     };
+
     load();
-  }, []);
+  }, [q, page]);
 
-  const filtered = useMemo(() => {
-    if (!q) return restaurants;
-    const needle = q.toLowerCase();
-    return restaurants.filter((r) => {
-      const name = (r.name || r.restaurant_name || "").toLowerCase();
-      const city = (r.city || "").toLowerCase();
-      const cuisine = (r.cuisine || r.category || "").toLowerCase();
-      return name.includes(needle) || city.includes(needle) || cuisine.includes(needle);
-    });
-  }, [restaurants, q]);
-
+  // Handle search submit
   const onSubmit = (e) => {
     e.preventDefault();
     const next = search.trim();
-    if (next) setParams({ q: next });
-    else setParams({});
+
+    if (next) {
+      setParams({ q: next, page: 1 });
+    } else {
+      setParams({});
+    }
   };
 
   return (
@@ -64,7 +72,6 @@ export default function Restaurants() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search restaurants"
-            aria-label="Search restaurants"
           />
         </form>
 
@@ -104,7 +111,7 @@ export default function Restaurants() {
           </button>
         </aside>
 
-        {/* MAIN */}
+        {/* MAIN CONTENT */}
         <main className="lm-main">
           <div className="lm-resultsHeader">
             <h2 className="lm-resultsTitle">
@@ -114,54 +121,95 @@ export default function Restaurants() {
 
           {loading ? (
             <div className="lm-empty">Loading…</div>
-          ) : filtered.length === 0 ? (
+          ) : restaurants.length === 0 ? (
             <div className="lm-empty">
               No results {q ? <>for <b>"{q}"</b></> : null}.
             </div>
           ) : (
-            <div
-              className={
-                filtered.length === 1 ? "lm-resultsGrid lm-resultsGridSingle" : "lm-resultsGrid"
-              }
-            >
-              {filtered.map((r, idx) => (
-                <div className="lm-resultCard" key={r.id ?? r.restaurant_id ?? idx}>
-                  <img
-                    className="lm-resultImg"
-                    src={
-                      r.image_url ||
-                      r.image ||
-                      "https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=1200&q=60"
-                    }
-                    alt={r.name || r.restaurant_name || "Restaurant"}
-                  />
+            <>
+              <div
+                className={
+                  restaurants.length === 1
+                    ? "lm-resultsGrid lm-resultsGridSingle"
+                    : "lm-resultsGrid"
+                }
+              >
+                {restaurants.map((r, idx) => (
+                  <div
+                    className="lm-resultCard"
+                    key={r.id ?? r.restaurant_id ?? idx}
+                  >
+                    <img
+                      className="lm-resultImg"
+                      src={
+                        r.image_url ||
+                        r.image ||
+                        "https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=1200&q=60"
+                      }
+                      alt={r.name || r.restaurant_name || "Restaurant"}
+                    />
 
-                  <div className="lm-resultBody">
-                    <div className="lm-resultName">{r.name || r.restaurant_name || "Restaurant"}</div>
+                    <div className="lm-resultBody">
+                      <div className="lm-resultName">
+                        {r.name || r.restaurant_name || "Restaurant"}
+                      </div>
 
-                    <div className="lm-resultMeta">
-                      <span className="lm-star" aria-hidden="true">
-                        ★
-                      </span>
-                      <span className="lm-rating">
-                        {(Number(r.rating) || 4.6).toFixed(1)}
-                      </span>
-                      <span className="lm-submeta">
-                        {r.reviews ? `(${r.reviews} reviews)` : "(2,156 reviews)"}
-                      </span>
+                      <div className="lm-resultMeta">
+                        <span className="lm-star">★</span>
+                        <span className="lm-rating">
+                          {(Number(r.rating) || 4.6).toFixed(1)}
+                        </span>
+                        <span className="lm-submeta">
+                          {r.reviews
+                            ? ` (${r.reviews} reviews)`
+                            : " (2,156 reviews)"}
+                        </span>
+                      </div>
+
+                      <button
+                        className="lm-orderBtnWide"
+                        onClick={() =>
+                          navigate(`/restaurants/${r.id ?? r.restaurant_id}`)
+                        }
+                      >
+                        Order
+                      </button>
                     </div>
-
-                    {/* Change this to your menu route later: /restaurants/:id */}
-                    <button
-                      className="lm-orderBtnWide"
-                      onClick={() => navigate("/restaurants")}
-                    >
-                      Order
-                    </button>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+
+              {/* Pagination */}
+              <div className="lm-pagination">
+                <button
+                  disabled={page <= 1}
+                  onClick={() =>
+                    setParams({
+                      q,
+                      page: page - 1,
+                    })
+                  }
+                >
+                  Previous
+                </button>
+
+                <span className="lm-pageInfo">
+                  Page {page} of {totalPages}
+                </span>
+
+                <button
+                  disabled={page >= totalPages}
+                  onClick={() =>
+                    setParams({
+                      q,
+                      page: page + 1,
+                    })
+                  }
+                >
+                  Next
+                </button>
+              </div>
+            </>
           )}
         </main>
       </div>
