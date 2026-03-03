@@ -61,11 +61,18 @@
   font-weight: bold;
 }
 
+.lm-brandLink {
+  color: white;
+  text-decoration: none;
+  font-weight: 800;
+}
+
 .lm-search {
   height: 32px;
   border-radius: 6px;
   border: none;
   padding: 0 10px;
+  width: 100%;
 }
 
 .lm-user {
@@ -86,8 +93,8 @@
 
 .lm-sidebar {
   background: white;
-  padding: 15px;
-  border-radius: 10px;
+  padding: 16px;
+  border-radius: 12px;
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -95,16 +102,26 @@
 
 .lm-deal {
   background: #ffe3c3;
-  padding: 10px;
-  border-radius: 8px;
+  padding: 14px;
+  border-radius: 12px;
+  margin-bottom: 20px;
 }
 
 .lm-navItem {
   background: #f1f2f6;
-  padding: 10px;
-  border-radius: 8px;
+  padding: 12px 14px;
+  border-radius: 10px;
   text-decoration: none;
   color: black;
+  display: flex;
+  align-items: center;
+  height: 44px;
+  box-sizing: border-box;
+  margin-bottom: 5px;
+}
+
+.lm-navItem:hover {
+  background: #e5e7ee;
 }
 
 .lm-signout {
@@ -115,23 +132,47 @@
 
 .lm-hero {
   background: white;
-  padding: 20px;
+  padding: 20px 300px 20px 20px;
   border-radius: 10px;
   display: grid;
-  grid-template-columns: 1fr 300px;
+  grid-template-columns: 1fr 340px;
   gap: 20px;
   align-items: center;
 }
 
 .lm-heroImage {
   width: 100%;
+  max-width: 340px;
   border-radius: 10px;
+  justify-self: center;
+  align-self: center;
+  display: block;
 }
 
 .lm-heroForm {
   display: flex;
   gap: 10px;
   margin-top: 10px;
+}
+
+.lm-heroForm input {
+  flex: 1;
+  padding: 10px 12px;
+  border-radius: 6px;
+  border: 1px solid #d3d6e0;
+}
+
+.lm-hero > :first-child {
+  max-width: 720px;
+}
+
+.lm-heroForm button {
+  padding: 10px 16px;
+  border-radius: 6px;
+  border: 1px solid #d3d6e0;
+  background: #f9f9f9;
+  cursor: pointer;
+  height: 42px;
 }
 
 /* CARDS */
@@ -208,7 +249,7 @@
 
 .lm-resultsGridSingle {
   grid-template-columns: minmax(280px, 340px);
-  justify-content: start; /* matches your mock: card sits left-ish */
+  justify-content: start;
 }
 
 .lm-resultCard {
@@ -262,8 +303,43 @@
   }
 }
 
-@media (max-width: 780px) {
+@media (max-width: 768px) {
+
+  .lm-topbar {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    height: auto;
+    padding: 10px;
+    text-align: center;
+  }
+
+  .lm-user {
+    text-align: center;
+  }
+
+  .lm-body {
+    grid-template-columns: 1fr;
+    padding: 10px;
+  }
+
+  .lm-sidebar {
+    order: 2;
+  }
+
+  .lm-hero {
+    grid-template-columns: 1fr;
+    padding: 0;
+  }
+
+  .lm-cardRow {
+    grid-template-columns: 1fr;
+  }
+
   .lm-resultsGrid {
     grid-template-columns: 1fr;
+  }
+
+  .lm-heroForm {
+    flex-direction: column;
   }
 }
