@@ -9,8 +9,7 @@ const app = express();
 // You no longer need CORS if everything runs from same server
 app.use(express.json());
 
-const PORT = process.env.PORT || 5000; 
-// const PORT = process.env.PORT || 80; 
+const PORT = process.env.PORT || 80; 
 
 //  Connect to MySQL using environment variables
 const db = mysql.createConnection({
