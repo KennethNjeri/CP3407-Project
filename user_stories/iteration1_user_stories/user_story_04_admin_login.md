@@ -1,6 +1,6 @@
 ## User story title: Admin Login
 
-https://github.com/KoenMeecham/CP3407-Project/issues/5#issue-3956071566
+Merged into issue#07 - [https://github.com/KoenMeecham/CP3407-Project/issues/7#issue-3956080344]
 
 ## Priority: 10
 Priority Notes:
