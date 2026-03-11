@@ -50,7 +50,7 @@ app.get("/api/restaurants", (req, res) => {
       WHERE
         r.name LIKE ?
         OR r.category LIKE ?
-        OR r.city LIKE ?
+        OR r.full_address LIKE ?
         OR r.id IN (
           SELECT restaurant_id
           FROM Menu_Items
@@ -145,7 +145,7 @@ app.get("/api/restaurants/:id/menu", (req, res) => {
     WHERE restaurant_id = ?
     ORDER BY category, name
     `,
-    
+
     [id],
     (err, results) => {
 
