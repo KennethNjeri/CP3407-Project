@@ -527,3 +527,57 @@
     width: 100%;
   }
 }
+
+/* ===== RESTAURANT MENU PAGE ===== */
+
+.lm-restaurantHeader{
+  background:white;
+  padding:20px;
+  border-radius:12px;
+  margin-bottom:20px;
+}
+
+.lm-menuGrid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+  gap:16px;
+}
+
+.lm-menuCard{
+  background:white;
+  padding:16px;
+  border-radius:12px;
+  border:1px solid #e3e6ef;
+  box-shadow:0 1px 6px rgba(0,0,0,0.04);
+}
+
+.lm-menuTitle{
+  font-weight:800;
+  margin-bottom:6px;
+}
+
+.lm-menuDesc{
+  font-size:13px;
+  color:#555;
+  margin-bottom:10px;
+}
+
+.lm-menuBottom{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.lm-menuPrice{
+  font-weight:800;
+  font-size:16px;
+}
+
+.lm-addBtn{
+  background:#1fbf5b;
+  color:white;
+  border:none;
+  padding:8px 12px;
+  border-radius:8px;
+  cursor:pointer;
+}

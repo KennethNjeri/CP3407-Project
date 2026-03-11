@@ -1,17 +1,16 @@
 require("dotenv").config();
 const express = require("express");
 const mysql = require("mysql2");
-const cors = require("cors");
 const path = require("path");
 
 const app = express();
 
-// You no longer need CORS if everything runs from same server
 app.use(express.json());
 
-const PORT = process.env.PORT || 80; 
+const PORT = process.env.PORT || 80;
 
-//  Connect to MySQL using environment variables
+// ================= DATABASE =================
+
 const db = mysql.createConnection({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
@@ -20,7 +19,6 @@ const db = mysql.createConnection({
   port: 3306
 });
 
-// Connect to database
 db.connect((err) => {
   if (err) {
     console.error("Database connection failed:", err);
@@ -30,38 +28,73 @@ db.connect((err) => {
 });
 
 
-// ================= API ROUTES =================
+// ================= RESTAURANT SEARCH =================
 
-// Get restaurants (with optional search)
 app.get("/api/restaurants", (req, res) => {
+
   const search = req.query.q;
   const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 50;
+  const limit = parseInt(req.query.limit) || 20;
   const offset = (page - 1) * limit;
 
-  let baseQuery = "FROM Restaurants";
+  let baseQuery = "FROM Restaurants r";
   let params = [];
 
-  // If searching
+  // UberEats style search
   if (search && search.trim() !== "") {
-    baseQuery += " WHERE name LIKE ? OR category LIKE ? OR city LIKE ?";
+
     const q = `%${search}%`;
-    params.push(q, q, q);
+
+    baseQuery = `
+      FROM Restaurants r
+      WHERE
+        r.name LIKE ?
+        OR r.category LIKE ?
+        OR r.city LIKE ?
+        OR r.id IN (
+          SELECT restaurant_id
+          FROM Menu
+          WHERE
+            name LIKE ?
+            OR category LIKE ?
+            OR description LIKE ?
+        )
+    `;
+
+    params = [q, q, q, q, q, q];
   }
 
-  // First get total count
+  // Get total count
   db.query(`SELECT COUNT(*) as count ${baseQuery}`, params, (err, countResult) => {
-    if (err) return res.status(500).json(err);
+
+    if (err) {
+      console.error(err);
+      return res.status(500).json(err);
+    }
 
     const total = countResult[0].count;
     const totalPages = Math.ceil(total / limit);
 
-    // Then get actual data
+    // Get paginated restaurants
     db.query(
-      `SELECT * ${baseQuery} ORDER BY name ASC LIMIT ? OFFSET ?`,
-      [...params, limit, offset],
+      `
+      SELECT r.*
+      ${baseQuery}
+      ORDER BY
+        CASE
+          WHEN r.name LIKE ? THEN 1
+          ELSE 2
+        END,
+        r.name ASC
+      LIMIT ? OFFSET ?
+      `,
+      [...params, `%${search || ""}%`, limit, offset],
       (err, results) => {
-        if (err) return res.status(500).json(err);
+
+        if (err) {
+          console.error(err);
+          return res.status(500).json(err);
+        }
 
         res.json({
           page,
@@ -69,21 +102,72 @@ app.get("/api/restaurants", (req, res) => {
           totalRestaurants: total,
           restaurants: results
         });
+
       }
     );
   });
+
 });
 
 
-// ================= SERVE REACT =================
+// ================= GET SINGLE RESTAURANT =================
 
-// Serve static frontend files
+app.get("/api/restaurants/:id", (req, res) => {
+
+  const id = req.params.id;
+
+  db.query(
+    "SELECT * FROM Restaurants WHERE id = ?",
+    [id],
+    (err, results) => {
+
+      if (err) {
+        console.error(err);
+        return res.status(500).json(err);
+      }
+
+      res.json(results[0]);
+    }
+  );
+});
+
+
+// ================= GET RESTAURANT MENU =================
+
+app.get("/api/restaurants/:id/menu", (req, res) => {
+
+  const id = req.params.id;
+
+  db.query(
+    `
+    SELECT *
+    FROM Menu
+    WHERE restaurant_id = ?
+    ORDER BY category, name
+    `,
+    [id],
+    (err, results) => {
+
+      if (err) {
+        console.error(err);
+        return res.status(500).json(err);
+      }
+
+      res.json(results);
+    }
+  );
+});
+
+
+// ================= SERVE REACT FRONTEND =================
+
 app.use(express.static(path.join(__dirname, "../client/dist")));
 
-// React Router fix (must be LAST)
 app.use((req, res) => {
   res.sendFile(path.join(__dirname, "../client/dist/index.html"));
 });
+
+
 // ================= START SERVER =================
 
 app.listen(PORT, "0.0.0.0", () => {
