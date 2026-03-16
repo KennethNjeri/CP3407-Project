@@ -47,31 +47,25 @@ app.get("/api/restaurants", (req, res) => {
   let limit = parsePositiveInt(req.query.limit, 20);
   if (limit > 50) limit = 50;
 
+  if (search !== "" && search.length < 2) {
+      return res.json({
+        page: 1,
+        totalPages: 0,
+        totalRestaurants: 0,
+        restaurants: []
+      });
+    }
   const offset = (page - 1) * limit;
 
   let baseQuery = "FROM Restaurants r";
   let params = [];
 
   if (search !== "") {
-    const q = `%${search}%`;
-
     baseQuery = `
       FROM Restaurants r
-      WHERE
-        r.name LIKE ?
-        OR r.category LIKE ?
-        OR r.full_address LIKE ?
-        OR r.id IN (
-          SELECT restaurant_id
-          FROM Menu_Items
-          WHERE
-            name LIKE ?
-            OR category LIKE ?
-            OR description LIKE ?
-        )
+      WHERE r.name LIKE ?
     `;
-
-    params = [q, q, q, q, q, q];
+    params = [`%${search}%`];
   }
 
   db.query(`SELECT COUNT(*) AS count ${baseQuery}`, params, (err, countResult) => {
@@ -107,9 +101,7 @@ app.get("/api/restaurants", (req, res) => {
           CASE
             WHEN LOWER(r.name) = LOWER(?) THEN 1
             WHEN LOWER(r.name) LIKE LOWER(?) THEN 2
-            WHEN LOWER(r.name) LIKE LOWER(?) THEN 3
-            WHEN LOWER(r.category) LIKE LOWER(?) THEN 4
-            ELSE 5
+            ELSE 3
           END,
           r.name ASC
         LIMIT ? OFFSET ?
@@ -117,8 +109,6 @@ app.get("/api/restaurants", (req, res) => {
 
       restaurantParams.push(
         search,
-        `${search}%`,
-        `%${search}%`,
         `${search}%`,
         limit,
         offset
