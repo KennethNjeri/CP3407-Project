@@ -50,14 +50,14 @@ app.get("/api/restaurants", (req, res) => {
 
   const offset = (page - 1) * limit;
 
-  let baseQuery = "FROM Restaurants r";
+  let baseQuery = "FROM restaurants r";
   let params = [];
 
   if (search !== "") {
     const q = `%${search}%`;
 
     baseQuery = `
-      FROM Restaurants r
+      FROM restaurants r
       WHERE
         r.name LIKE ?
         OR r.category LIKE ?
@@ -86,13 +86,17 @@ app.get("/api/restaurants", (req, res) => {
 
     let restaurantQuery = `
       SELECT
-        r.id,
-        r.name,
-        r.category,
-        r.full_address,
-        r.image_url,
-        r.rating,
-        r.reviews
+          r.id,
+          r.position,
+          r.name,
+          r.score,
+          r.ratings,
+          r.category,
+          r.price_range,
+          r.full_address,
+          r.zip_code,
+          r.lat,
+          r.lng
       ${baseQuery}
     `;
 
@@ -149,17 +153,38 @@ app.get("/api/restaurants", (req, res) => {
 // ================= GET SINGLE RESTAURANT =================
 
 app.get("/api/restaurants/:id", (req, res) => {
+  const id = parsePositiveInt(req.params.id, 0);
 
-  const id = req.params.id;
+  if (id === 0) {
+    return res.status(400).json({ error: "Invalid restaurant id" });
+  }
 
   db.query(
-    "SELECT * FROM Restaurants WHERE id = ?",
+    `
+    SELECT
+      id,
+      position,
+      name,
+      score,
+      ratings,
+      category,
+      price_range,
+      full_address,
+      zip_code,
+      lat,
+      lng
+    FROM restaurants
+    WHERE id = ?
+    `,
     [id],
     (err, results) => {
-
       if (err) {
-        console.error(err);
-        return res.status(500).json(err);
+        console.error("Error fetching restaurant:", err);
+        return res.status(500).json({ error: "Server error while fetching restaurant" });
+      }
+
+      if (results.length === 0) {
+        return res.status(404).json({ error: "Restaurant not found" });
       }
 
       res.json(results[0]);
