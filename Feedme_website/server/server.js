@@ -64,7 +64,7 @@ app.get("/api/restaurants", (req, res) => {
         OR r.full_address LIKE ?
         OR r.id IN (
           SELECT restaurant_id
-          FROM Menu_Items
+          FROM menu_items
           WHERE
             name LIKE ?
             OR category LIKE ?
@@ -196,23 +196,30 @@ app.get("/api/restaurants/:id", (req, res) => {
 // ================= GET RESTAURANT MENU =================
 
 app.get("/api/restaurants/:id/menu", (req, res) => {
+  const id = parsePositiveInt(req.params.id, 0);
 
-  const id = req.params.id;
+  if (id === 0) {
+    return res.status(400).json({ error: "Invalid restaurant id" });
+  }
 
   db.query(
     `
-    SELECT *
+    SELECT
+      id,
+      restaurant_id,
+      category,
+      name,
+      description,
+      price
     FROM menu_items
     WHERE restaurant_id = ?
-    ORDER BY category, name
+    ORDER BY category ASC, name ASC
     `,
-
     [id],
     (err, results) => {
-
       if (err) {
-        console.error(err);
-        return res.status(500).json(err);
+        console.error("Error fetching menu:", err);
+        return res.status(500).json({ error: "Server error while fetching menu" });
       }
 
       res.json(results);
