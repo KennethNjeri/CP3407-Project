@@ -42,17 +42,18 @@ function parsePositiveInt(value, fallback) {
 
 app.get("/api/restaurants", (req, res) => {
 
-  const search = req.query.q;
-  const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 20;
+  const search = (req.query.q || "").trim();
+  const page = parsePositiveInt(req.query.page, 1);
+
+  let limit = parsePositiveInt(req.query.limit, 20);
+  if (limit > 50) limit = 50;
+
   const offset = (page - 1) * limit;
 
   let baseQuery = "FROM Restaurants r";
   let params = [];
 
-  // UberEats style search
-  if (search && search.trim() !== "") {
-
+  if (search !== "") {
     const q = `%${search}%`;
 
     baseQuery = `
@@ -74,49 +75,74 @@ app.get("/api/restaurants", (req, res) => {
     params = [q, q, q, q, q, q];
   }
 
-  // Get total count
-  db.query(`SELECT COUNT(*) as count ${baseQuery}`, params, (err, countResult) => {
-
+  db.query(`SELECT COUNT(*) AS count ${baseQuery}`, params, (err, countResult) => {
     if (err) {
-      console.error(err);
-      return res.status(500).json(err);
+      console.error("Error counting restaurants:", err);
+      return res.status(500).json({ error: "Server error while counting restaurants" });
     }
 
     const total = countResult[0].count;
-    const totalPages = Math.ceil(total / limit);
+    const totalPages = total === 0 ? 0 : Math.ceil(total / limit);
 
-    // Get paginated restaurants
-    db.query(
-      `
-      SELECT r.*
+    let restaurantQuery = `
+      SELECT
+        r.id,
+        r.name,
+        r.category,
+        r.full_address,
+        r.image_url,
+        r.rating,
+        r.reviews
       ${baseQuery}
-      ORDER BY
-        CASE
-          WHEN r.name LIKE ? THEN 1
-          ELSE 2
-        END,
-        r.name ASC
-      LIMIT ? OFFSET ?
-      `,
-      [...params, `%${search || ""}%`, limit, offset],
-      (err, results) => {
+    `;
 
-        if (err) {
-          console.error(err);
-          return res.status(500).json(err);
-        }
+    let restaurantParams = [...params];
 
-        res.json({
-          page,
-          totalPages,
-          totalRestaurants: total,
-          restaurants: results
-        });
+    if (search !== "") {
+      restaurantQuery += `
+        ORDER BY
+          CASE
+            WHEN LOWER(r.name) = LOWER(?) THEN 1
+            WHEN LOWER(r.name) LIKE LOWER(?) THEN 2
+            WHEN LOWER(r.name) LIKE LOWER(?) THEN 3
+            WHEN LOWER(r.category) LIKE LOWER(?) THEN 4
+            ELSE 5
+          END,
+          r.name ASC
+        LIMIT ? OFFSET ?
+      `;
 
+      restaurantParams.push(
+        search,
+        `${search}%`,
+        `%${search}%`,
+        `${search}%`,
+        limit,
+        offset
+      );
+    } else {
+      restaurantQuery += `
+        ORDER BY r.name ASC
+        LIMIT ? OFFSET ?
+      `;
+
+      restaurantParams.push(limit, offset);
+    }
+
+    db.query(restaurantQuery, restaurantParams, (err, results) => {
+      if (err) {
+        console.error("Error fetching restaurants:", err);
+        return res.status(500).json({ error: "Server error while fetching restaurants" });
       }
-    );
-  });
 
+      res.json({
+        page,
+        totalPages,
+        totalRestaurants: total,
+        restaurants: results
+      });
+    });
+  });
 });
 
 
