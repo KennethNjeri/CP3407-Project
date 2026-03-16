@@ -202,7 +202,7 @@ app.get("/api/restaurants/:id/menu", (req, res) => {
   db.query(
     `
     SELECT *
-    FROM Menu_Items
+    FROM menu_items
     WHERE restaurant_id = ?
     ORDER BY category, name
     `,
