@@ -4,7 +4,7 @@ import Landing from "./Landing";
 import Restaurants from "./Restaurants";
 import Orders from "./Orders";
 import RestaurantMenu from "./RestaurantMenu";
-import "./App.css"; // move CSS to separate file
+import "./App.css";
 
 function App() {
   return (

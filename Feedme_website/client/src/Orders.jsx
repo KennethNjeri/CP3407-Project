@@ -3,11 +3,11 @@ import { Link } from "react-router-dom";
 import "./App.css";
 
 export default function Orders() {
-  const [tab, setTab] = useState("all"); // all | delivered | active
+  const [tab, setTab] = useState("all");
   const [search, setSearch] = useState("");
-  const [sort, setSort] = useState("newest"); // newest | oldest
+  const [sort, setSort] = useState("newest");
 
-  // Dummy data (swap to API later)
+  // Dummy data for now
   const orders = useMemo(
     () => [
       {
@@ -76,19 +76,17 @@ export default function Orders() {
 
   return (
     <div className="lm-shell">
-      {/* TOP BAR */}
       <header className="lm-topbar">
         <Link to="/" className="lm-brandLink">
           FeedMe
         </Link>
 
-        <input className="lm-search" placeholder="" />
+        <input className="lm-search" placeholder="" readOnly />
 
         <div className="lm-user">Fred Smith</div>
       </header>
 
       <div className="lm-body">
-        {/* SIDEBAR */}
         <aside className="lm-sidebar">
           <div className="lm-deal">
             <strong>New Deals Alert</strong>
@@ -120,7 +118,6 @@ export default function Orders() {
           </button>
         </aside>
 
-        {/* MAIN */}
         <main className="lm-main">
           <section className="lm-ordersHeaderCard">
             <div>
@@ -153,7 +150,6 @@ export default function Orders() {
             </div>
           </section>
 
-          {/* Tabs */}
           <div className="lm-ordersTabs">
             <button
               className={`lm-tab ${tab === "all" ? "lm-tabActive" : ""}`}
@@ -175,7 +171,6 @@ export default function Orders() {
             </button>
           </div>
 
-          {/* List */}
           <div className="lm-ordersList">
             {filtered.length === 0 ? (
               <div className="lm-empty">No orders match that.</div>
