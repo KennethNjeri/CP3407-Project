@@ -41,7 +41,6 @@ function parsePositiveInt(value, fallback) {
 // ================= RESTAURANT SEARCH =================
 
 app.get("/api/restaurants", (req, res) => {
-
   const search = (req.query.q || "").trim();
   const page = parsePositiveInt(req.query.page, 1);
 
@@ -50,21 +49,21 @@ app.get("/api/restaurants", (req, res) => {
 
   const offset = (page - 1) * limit;
 
-  let baseQuery = "FROM restaurants r";
+  let baseQuery = "FROM Restaurants r";
   let params = [];
 
   if (search !== "") {
     const q = `%${search}%`;
 
     baseQuery = `
-      FROM restaurants r
+      FROM Restaurants r
       WHERE
         r.name LIKE ?
         OR r.category LIKE ?
         OR r.full_address LIKE ?
         OR r.id IN (
           SELECT restaurant_id
-          FROM menu_items
+          FROM Menu_Items
           WHERE
             name LIKE ?
             OR category LIKE ?
@@ -86,17 +85,17 @@ app.get("/api/restaurants", (req, res) => {
 
     let restaurantQuery = `
       SELECT
-          r.id,
-          r.position,
-          r.name,
-          r.score,
-          r.ratings,
-          r.category,
-          r.price_range,
-          r.full_address,
-          r.zip_code,
-          r.lat,
-          r.lng
+        r.id,
+        r.position,
+        r.name,
+        r.score,
+        r.ratings,
+        r.category,
+        r.price_range,
+        r.full_address,
+        r.zip_code,
+        r.lat,
+        r.lng
       ${baseQuery}
     `;
 
@@ -149,7 +148,6 @@ app.get("/api/restaurants", (req, res) => {
   });
 });
 
-
 // ================= GET SINGLE RESTAURANT =================
 
 app.get("/api/restaurants/:id", (req, res) => {
@@ -173,7 +171,7 @@ app.get("/api/restaurants/:id", (req, res) => {
       zip_code,
       lat,
       lng
-    FROM restaurants
+    FROM Restaurants
     WHERE id = ?
     `,
     [id],
@@ -191,7 +189,6 @@ app.get("/api/restaurants/:id", (req, res) => {
     }
   );
 });
-
 
 // ================= GET RESTAURANT MENU =================
 
@@ -211,7 +208,7 @@ app.get("/api/restaurants/:id/menu", (req, res) => {
       name,
       description,
       price
-    FROM menu_items
+    FROM Menu_Items
     WHERE restaurant_id = ?
     ORDER BY category ASC, name ASC
     `,
@@ -227,7 +224,6 @@ app.get("/api/restaurants/:id/menu", (req, res) => {
   );
 });
 
-
 // ================= SERVE REACT FRONTEND =================
 
 app.use(express.static(path.join(__dirname, "../client/dist")));
@@ -235,7 +231,6 @@ app.use(express.static(path.join(__dirname, "../client/dist")));
 app.use((req, res) => {
   res.sendFile(path.join(__dirname, "../client/dist/index.html"));
 });
-
 
 // ================= START SERVER =================
 
