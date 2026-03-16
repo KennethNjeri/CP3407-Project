@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { useCart } from "./CartContext";
+import { useCart } from "./Cart";
 import "./App.css";
 
 export default function RestaurantMenu() {
