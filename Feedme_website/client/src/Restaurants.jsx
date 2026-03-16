@@ -7,23 +7,24 @@ export default function Restaurants() {
   const [params, setParams] = useSearchParams();
 
   const q = (params.get("q") || "").trim();
-  const page = Number(params.get("page") || 1);
+  const rawPage = Number(params.get("page") || 1);
+  const page = rawPage > 0 ? rawPage : 1;
 
   const [search, setSearch] = useState(q);
   const [restaurants, setRestaurants] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [totalPages, setTotalPages] = useState(1);
+  const [error, setError] = useState("");
+  const [totalPages, setTotalPages] = useState(0);
 
-  // Keep input synced when URL changes
   useEffect(() => {
     setSearch(q);
   }, [q]);
 
-  // Fetch restaurants whenever search or page changes
   useEffect(() => {
     const load = async () => {
       try {
         setLoading(true);
+        setError("");
 
         const query = new URLSearchParams();
         if (q) query.append("q", q);
@@ -31,13 +32,20 @@ export default function Restaurants() {
         query.append("limit", 20);
 
         const res = await fetch(`/api/restaurants?${query.toString()}`);
+
+        if (!res.ok) {
+          throw new Error("Failed to load restaurants");
+        }
+
         const data = await res.json();
 
         setRestaurants(data.restaurants || []);
-        setTotalPages(data.totalPages || 1);
+        setTotalPages(data.totalPages || 0);
       } catch (err) {
         console.error(err);
         setRestaurants([]);
+        setTotalPages(0);
+        setError("Could not load restaurants.");
       } finally {
         setLoading(false);
       }
@@ -46,13 +54,12 @@ export default function Restaurants() {
     load();
   }, [q, page]);
 
-  // Handle search submit
   const onSubmit = (e) => {
     e.preventDefault();
     const next = search.trim();
 
     if (next) {
-      setParams({ q: next, page: 1 });
+      setParams({ q: next, page: "1" });
     } else {
       setParams({});
     }
@@ -60,7 +67,6 @@ export default function Restaurants() {
 
   return (
     <div className="lm-shell">
-      {/* TOP BAR */}
       <header className="lm-topbar">
         <Link to="/" className="lm-brandLink">
           FeedMe
@@ -71,7 +77,7 @@ export default function Restaurants() {
             className="lm-search"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search restaurants"
+            placeholder="Search restaurants, cuisines, or dishes"
           />
         </form>
 
@@ -79,7 +85,6 @@ export default function Restaurants() {
       </header>
 
       <div className="lm-body">
-        {/* SIDEBAR */}
         <aside className="lm-sidebar">
           <div className="lm-deal">
             <strong>New Deals Alert</strong>
@@ -111,7 +116,6 @@ export default function Restaurants() {
           </button>
         </aside>
 
-        {/* MAIN CONTENT */}
         <main className="lm-main">
           <div className="lm-resultsHeader">
             <h2 className="lm-resultsTitle">
@@ -120,7 +124,9 @@ export default function Restaurants() {
           </div>
 
           {loading ? (
-            <div className="lm-empty">Loading…</div>
+            <div className="lm-empty">Loading...</div>
+          ) : error ? (
+            <div className="lm-empty">{error}</div>
           ) : restaurants.length === 0 ? (
             <div className="lm-empty">
               No results {q ? <>for <b>"{q}"</b></> : null}.
@@ -137,40 +143,40 @@ export default function Restaurants() {
                 {restaurants.map((r, idx) => (
                   <div
                     className="lm-resultCard"
-                    key={r.id ?? r.restaurant_id ?? idx}
+                    key={r.id ?? idx}
                   >
                     <img
                       className="lm-resultImg"
-                      src={
-                        r.image_url ||
-                        r.image ||
-                        "https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=1200&q=60"
-                      }
-                      alt={r.name || r.restaurant_name || "Restaurant"}
+                      src="https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=1200&q=60"
+                      alt={r.name || "Restaurant"}
                     />
 
                     <div className="lm-resultBody">
                       <div className="lm-resultName">
-                        {r.name || r.restaurant_name || "Restaurant"}
+                        {r.name || "Restaurant"}
                       </div>
 
                       <div className="lm-resultMeta">
                         <span className="lm-star">★</span>
                         <span className="lm-rating">
-                          {(Number(r.rating) || 4.6).toFixed(1)}
+                          {(Number(r.score) || 0).toFixed(1)}
                         </span>
                         <span className="lm-submeta">
-                          {r.reviews
-                            ? ` (${r.reviews} reviews)`
-                            : " (2,156 reviews)"}
+                          {r.ratings ? ` (${r.ratings} ratings)` : ""}
                         </span>
+                      </div>
+
+                      <div className="lm-submeta">
+                        {r.category || "Restaurant"}
+                      </div>
+
+                      <div className="lm-submeta">
+                        {r.price_range ? `Price: ${r.price_range}` : ""}
                       </div>
 
                       <button
                         className="lm-orderBtnWide"
-                        onClick={() =>
-                          navigate(`/restaurants/${r.id ?? r.restaurant_id}`)
-                        }
+                        onClick={() => navigate(`/restaurants/${r.id}`)}
                       >
                         Order
                       </button>
@@ -179,36 +185,37 @@ export default function Restaurants() {
                 ))}
               </div>
 
-              {/* Pagination */}
-              <div className="lm-pagination">
-                <button
-                  disabled={page <= 1}
-                  onClick={() =>
-                    setParams({
-                      q,
-                      page: page - 1,
-                    })
-                  }
-                >
-                  Previous
-                </button>
+              {totalPages > 1 && (
+                <div className="lm-pagination">
+                  <button
+                    disabled={page <= 1}
+                    onClick={() =>
+                      setParams({
+                        ...(q ? { q } : {}),
+                        page: String(page - 1),
+                      })
+                    }
+                  >
+                    Previous
+                  </button>
 
-                <span className="lm-pageInfo">
-                  Page {page} of {totalPages}
-                </span>
+                  <span className="lm-pageInfo">
+                    Page {page} of {totalPages}
+                  </span>
 
-                <button
-                  disabled={page >= totalPages}
-                  onClick={() =>
-                    setParams({
-                      q,
-                      page: page + 1,
-                    })
-                  }
-                >
-                  Next
-                </button>
-              </div>
+                  <button
+                    disabled={page >= totalPages}
+                    onClick={() =>
+                      setParams({
+                        ...(q ? { q } : {}),
+                        page: String(page + 1),
+                      })
+                    }
+                  >
+                    Next
+                  </button>
+                </div>
+              )}
             </>
           )}
         </main>
