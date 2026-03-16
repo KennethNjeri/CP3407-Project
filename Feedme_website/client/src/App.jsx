@@ -4,18 +4,21 @@ import Landing from "./Landing";
 import Restaurants from "./Restaurants";
 import Orders from "./Orders";
 import RestaurantMenu from "./RestaurantMenu";
+import { CartProvider } from "./Cart";
 import "./App.css";
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Landing />} />
-        <Route path="/restaurants" element={<Restaurants />} />
-        <Route path="/orders" element={<Orders />} />
-        <Route path="/restaurants/:id" element={<RestaurantMenu />} />
-      </Routes>
-    </Router>
+    <CartProvider>
+      <Router>
+        <Routes>
+          <Route path="/" element={<Landing />} />
+          <Route path="/restaurants" element={<Restaurants />} />
+          <Route path="/orders" element={<Orders />} />
+          <Route path="/restaurants/:id" element={<RestaurantMenu />} />
+        </Routes>
+      </Router>
+    </CartProvider>
   );
 }
 
