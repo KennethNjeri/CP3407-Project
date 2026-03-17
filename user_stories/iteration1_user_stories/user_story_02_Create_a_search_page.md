@@ -6,6 +6,11 @@ Other versions: Search restaurants, Find restaurants, Restaurant search screen
 https://github.com/KoenMeecham/CP3407-Project/issues/6#issue-3956077960
 
 
+Design Link: https://miro.com/app/board/uXjVG5mMYbY=/?moveToWidget=3458764661648964948&cot=14
+<img width="971" height="650" alt="image" src="https://github.com/user-attachments/assets/e9621fd1-44f3-4eec-999f-e075cbc4ccfe" />
+
+
+
 ## Priority: 10 
 Priority Notes:
 Iteration 1 – Basic UI search input + results list
