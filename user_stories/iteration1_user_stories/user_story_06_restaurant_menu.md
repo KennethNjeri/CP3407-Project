@@ -1,6 +1,13 @@
 ## User story title: View Restaurant Menu
 
+
 https://github.com/KoenMeecham/CP3407-Project/issues/8#issue-3956082158
+
+Design link:
+https://miro.com/app/board/uXjVG5mMYbY=/?moveToWidget=3458764662786724222&cot=14
+<img width="643" height="650" alt="image" src="https://github.com/user-attachments/assets/d76bb636-65fd-4b52-9e52-db17d8fa9d47" />
+
+
 
 ## Priority: 10
 Priority Notes:
