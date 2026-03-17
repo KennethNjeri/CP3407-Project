@@ -5,6 +5,13 @@ Other versions: View orders, Order history, My orders page
 
 https://github.com/KoenMeecham/CP3407-Project/issues/4#issue-3956061370
 
+
+Design Link: https://miro.com/app/board/uXjVG5mMYbY=/?moveToWidget=3458764661991950233&cot=14
+
+<img width="851" height="582" alt="image" src="https://github.com/user-attachments/assets/ac70d4c4-a324-497e-ba7f-37ab89df7c52" />
+
+
+
 ## Priority: 10 (e.g. latest for iteration-1)
 Priority Notes:
 Iteration 1 – Show list of current/past orders
