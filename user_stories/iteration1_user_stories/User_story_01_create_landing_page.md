@@ -10,6 +10,11 @@ Priority Notes:
 Iteration 1 – Must-have for MVP (first impression + navigation entry point)
 
 
+Design link: https://miro.com/app/board/uXjVG5mMYbY=/?moveToWidget=3458764643528809519&cot=14
+
+<img width="618" height="620" alt="image" src="https://github.com/user-attachments/assets/ee151430-f9c0-4346-b84a-037008a3957a" />
+
+
 
 ## Estimation: 1 day
 Any notes on estimation go here. Keep your planning poker game numbers. For example
