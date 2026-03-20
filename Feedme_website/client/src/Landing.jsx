@@ -1,7 +1,6 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./App.css";
-import {useCart} from "./Cart";
 import CartDropdown from "./CartDropdown";
 import { useUser } from "./UserContext";
 import UserMenu from "./UserMenu";
@@ -11,6 +10,36 @@ import UserMenu from "./UserMenu";
 export default function Landing() {
     const { user, logout } = useUser();
     const navigate = useNavigate();
+    const [featuredRestaurants, setFeaturedRestaurants] = useState([]);
+    const [loadingFeatured, setLoadingFeatured] = useState(true);
+    const [featuredError, setFeaturedError] = useState("");
+
+    useEffect(() => {
+      const loadFeaturedRestaurants = async () => {
+        try {
+          setLoadingFeatured(true);
+          setFeaturedError("");
+
+          const res = await fetch("/api/restaurants?limit=4");
+
+          if (!res.ok) {
+            throw new Error("Failed to load featured restaurants");
+          }
+
+          const data = await res.json();
+          setFeaturedRestaurants(data.restaurants || []);
+        } catch (err) {
+          console.error(err);
+          setFeaturedRestaurants([]);
+          setFeaturedError("Could not load featured restaurants.");
+        } finally {
+          setLoadingFeatured(false);
+        }
+      };
+
+      loadFeaturedRestaurants();
+    }, []);
+
     return (
         <div className="lm-shell">
             {/* TOP BAR */}
@@ -98,24 +127,42 @@ export default function Landing() {
                     </section>
 
                     {/* RESTAURANT SECTION */}
-                    <h2>Recommended for You</h2>
+                    <h2>Featured Restaurants</h2>
 
-                    <div className="lm-cardRow">
-                        {[1, 2, 3, 4].map((id) => (
-                            <div key={id} className="lm-card">
-                                <img
-                                    src="https://images.unsplash.com/photo-1550547660-d9450f859349"
-                                    alt="food"
-                                />
-                                <h3>Restaurant {id}</h3>
-                                <p>⭐ 4.{id} • 2km</p>
+                    {loadingFeatured ? (
+                      <div className="lm-empty">Loading featured restaurants...</div>
+                    ) : featuredError ? (
+                      <div className="lm-empty">{featuredError}</div>
+                    ) : featuredRestaurants.length === 0 ? (
+                      <div className="lm-empty">No featured restaurants available right now.</div>
+                    ) : (
+                      <div className="lm-cardRow">
+                        {featuredRestaurants.map((restaurant) => (
+                          <div key={restaurant.id} className="lm-card">
+                            <img
+                              src="https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=1200&q=60"
+                              alt={restaurant.name || "Restaurant"}
+                            />
 
-                                <Link to="/restaurants">
-                                    <button className="lm-orderBtn">Order</button>
-                                </Link>
-                            </div>
+                            <h3>{restaurant.name || "Restaurant"}</h3>
+
+                            <p>
+                              ⭐ {(Number(restaurant.score) || 0).toFixed(1)}
+                              {restaurant.ratings ? ` (${restaurant.ratings} ratings)` : ""}
+                            </p>
+
+                            <p>{restaurant.category || "Restaurant"}</p>
+
+                            <button
+                              className="lm-orderBtn"
+                              onClick={() => navigate(`/restaurants/${restaurant.id}`)}
+                            >
+                              Order
+                            </button>
+                          </div>
                         ))}
-                    </div>
+                      </div>
+                    )}
                 </main>
             </div>
         </div>
