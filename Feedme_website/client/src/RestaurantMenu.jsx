@@ -86,7 +86,7 @@ export default function RestaurantMenu() {
 
   return (
     <div className="lm-shell">
-      <header className="rm-topbar">
+<header className="rm-topbar">
   <Link to="/" className="rm-brandLink">FeedMe</Link>
 
   <div className="rm-navSpacer" />
@@ -108,9 +108,9 @@ export default function RestaurantMenu() {
           <p>Your cart is empty.</p>
         ) : (
           <>
-            <div className="lm-cartList">
+            <div className="rm-cartList">
               {cart.map((item) => (
-                <div className="lm-cartItem" key={item.id}>
+                <div className="rm-cartItem" key={item.id}>
                   <div>
                     <strong>{item.name}</strong>
                     <div>Qty: {item.quantity}</div>
@@ -118,7 +118,7 @@ export default function RestaurantMenu() {
 
                   <div>${(item.price * item.quantity).toFixed(2)}</div>
 
-                  <div className="lm-cartActions">
+                  <div className="rm-cartActions">
                     <button onClick={() => addToCart(item)}>+</button>
                     <button onClick={() => decreaseQuantity(item.id)}>-</button>
                   </div>
@@ -128,17 +128,20 @@ export default function RestaurantMenu() {
 
             <hr />
 
-            <div className="lm-cartSummary">
+            <div className="rm-cartSummary">
               <strong>Subtotal:</strong>
               <strong>${subtotal.toFixed(2)}</strong>
             </div>
 
-            <button className="lm-checkoutBtn"
+            <button
+              className="rm-checkoutBtn"
               onClick={() => {
                 setCart([]);
                 setCartOpen(false);
                 alert("Order placed!");
-              }}>Checkout
+              }}
+            >
+              Checkout
             </button>
           </>
         )}
