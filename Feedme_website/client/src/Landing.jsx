@@ -1,5 +1,5 @@
 import React from "react";
-import {Link} from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./App.css";
 import {useCart} from "./Cart";
 import CartDropdown from "./CartDropdown";
@@ -9,16 +9,31 @@ import { useUser } from "./UserContext";
 
 export default function Landing() {
     const { user } = useUser();
+    const navigate = useNavigate();
     return (
         <div className="lm-shell">
             {/* TOP BAR */}
             <header className="lm-topbar">
                 <Link to="/" className="lm-brandLink">FeedMe</Link>
 
-                <input
-                    className="lm-search"
-                    placeholder="Search restaurants"
-                />
+                <form
+                    className="lm-topsearchForm"
+                    onSubmit={(e) => {
+                        e.preventDefault();
+                        const value = e.target.search.value.trim();
+                        if (value) {
+                            navigate(`/restaurants?q=${encodeURIComponent(value)}&page=1`);
+                        } else {
+                            navigate("/restaurants");
+                        }
+                    }}
+                >
+                    <input
+                        name="search"
+                        className="lm-search"
+                        placeholder="Search restaurants, cuisines, or dishes"
+                    />
+                </form>
 
                 <div className="lm-topbarRight">
                     <CartDropdown />
