@@ -1,6 +1,3 @@
-/* =========================
-   Base / App
-========================= */
 
 .App {
   max-width: 800px;
@@ -15,9 +12,6 @@
   font-family: Arial, Helvetica, sans-serif;
 }
 
-/* =========================
-   Shared Topbar / Layout
-========================= */
 
 .lm-topbar {
   background: #f4a14c;
@@ -81,9 +75,6 @@
   min-width: 0;
 }
 
-/* =========================
-   Sidebar
-========================= */
 
 .lm-sidebar {
   background: white;
@@ -133,9 +124,6 @@ nav {
   flex: 1;
 }
 
-/* =========================
-   Landing Hero
-========================= */
 
 .lm-hero {
   background: white;
@@ -187,9 +175,6 @@ nav {
   height: 42px;
 }
 
-/* =========================
-   Landing Cards
-========================= */
 
 .lm-cardRow {
   display: grid;
@@ -220,9 +205,6 @@ nav {
   cursor: pointer;
 }
 
-/* =========================
-   Restaurant Results Page
-========================= */
 
 .lm-resultsHeader {
   background: #ffffff;
@@ -316,9 +298,6 @@ nav {
   font-weight: 900;
 }
 
-/* =========================
-   Pagination
-========================= */
 
 .pagination {
   margin-top: 20px;
@@ -369,9 +348,6 @@ nav {
   color: #4a5160;
 }
 
-/* =========================
-   Checkout Page
-========================= */
 
 .checkout-layout {
   display: grid;
@@ -482,9 +458,6 @@ nav {
   font-size: 14px;
 }
 
-/* =========================
-   Orders Page
-========================= */
 
 .orders-headerCard {
   display: flex;
@@ -567,10 +540,7 @@ nav {
   font-size: 14px;
 }
 
-/* =========================
-   Old Orders Styles
-   kept so old markup won't break
-========================= */
+
 
 .lm-ordersHeaderCard {
   background: #ffffff;
@@ -710,9 +680,6 @@ nav {
   min-width: 140px;
 }
 
-/* =========================
-   Restaurant Menu Page
-========================= */
 
 .lm-restaurantHeader {
   background: white;
@@ -821,9 +788,6 @@ nav {
   font-weight: bold;
 }
 
-/* =========================
-   Restaurant Menu Navbar
-========================= */
 
 .rm-topbar {
   background: #f4a14c;
@@ -924,9 +888,6 @@ nav {
   color: white;
 }
 
-/* =========================
-   Shared Cart Dropdown
-========================= */
 
 .cart-nav {
   position: relative;
@@ -1021,9 +982,6 @@ nav {
   color: white;
 }
 
-/* =========================
-   Restaurant List Legacy
-========================= */
 
 .restaurant-list {
   list-style: none;
@@ -1035,9 +993,14 @@ nav {
   border-bottom: 1px solid #ccc;
 }
 
-/* =========================
-   Responsive
-========================= */
+.checkout-successBanner {
+  background: #dcfce7;
+  color: #166534;
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 16px;
+  font-weight: 700;
+}
 
 @media (max-width: 1100px) {
   .lm-resultsGrid {

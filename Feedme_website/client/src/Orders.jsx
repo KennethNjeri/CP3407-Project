@@ -1,21 +1,30 @@
 import React, { useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import "./App.css";
 import CartDropdown from "./CartDropdown";
 import { useUser } from "./UserContext";
+import { useCart } from "./Cart";
 
 export default function Orders() {
   const { user, logout } = useUser();
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("newest");
+  const { addToCart } = useCart();
+  const location = useLocation();
 
   const allOrders = JSON.parse(localStorage.getItem("feedme_orders") || "[]");
 
   const visibleOrders = useMemo(() => {
     let orders = [...allOrders];
 
+    const guestEmail = localStorage.getItem("feedme_guest_email") || "";
+
     if (user.isLoggedIn) {
       orders = orders.filter((order) => order.email === user.email);
+    } else if (guestEmail) {
+      orders = orders.filter((order) => order.email === guestEmail);
+    } else {
+      orders = [];
     }
 
     if (search.trim()) {
@@ -128,6 +137,12 @@ export default function Orders() {
             </div>
           </div>
 
+          {location.state?.orderPlaced && (
+            <div className="checkout-successBanner">
+              Order {location.state.orderNumber} placed successfully.
+            </div>
+          )}
+
           {visibleOrders.length === 0 ? (
             <div className="lm-empty">
               No orders yet. Place an order from checkout to see it here.
@@ -163,7 +178,9 @@ export default function Orders() {
 
                     <button
                       className="order-reorderBtn"
-                      onClick={() => alert("Reorder can be added next")}
+                      onClick={() => {
+                        order.items.forEach((item) => addToCart(item));
+                      }}
                     >
                       Reorder
                     </button>

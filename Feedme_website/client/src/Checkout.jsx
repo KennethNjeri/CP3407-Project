@@ -26,52 +26,57 @@ export default function Checkout() {
   const total = subtotal + deliveryFee;
 
   const handlePlaceOrder = (e) => {
-    e.preventDefault();
+      e.preventDefault();
 
-    if (cart.length === 0) {
-      setError("Your cart is empty.");
-      return;
-    }
+      if (cart.length === 0) {
+          setError("Your cart is empty.");
+          return;
+      }
 
-    if (!user.isLoggedIn && !guestEmail.trim()) {
-      setError("Please enter an email for guest checkout.");
-      return;
-    }
+      if (!user.isLoggedIn && !guestEmail.trim()) {
+          setError("Please enter an email for guest checkout.");
+          return;
+      }
 
-    if (!deliveryAddress.trim()) {
-      setError("Please enter a delivery address.");
-      return;
-    }
+      if (!deliveryAddress.trim()) {
+          setError("Please enter a delivery address.");
+          return;
+      }
 
-    if (!cardName.trim() || !cardNumber.trim() || !expiry.trim() || !cvv.trim()) {
-      setError("Please enter your dummy payment details.");
-      return;
-    }
+      if (!cardName.trim() || !cardNumber.trim() || !expiry.trim() || !cvv.trim()) {
+          setError("Please enter your dummy payment details.");
+          return;
+      }
 
-    const existingOrders = JSON.parse(localStorage.getItem("feedme_orders") || "[]");
+      const existingOrders = JSON.parse(localStorage.getItem("feedme_orders") || "[]");
 
-    const newOrder = {
-      id: Date.now(),
-      orderNumber: `FM${Date.now()}`,
-      email: orderEmail,
-      customerName: user.isLoggedIn ? user.name : "Guest",
-      isGuestOrder: !user.isLoggedIn,
-      items: cart,
-      subtotal,
-      deliveryFee,
-      total,
-      status: "Placed",
-      deliveryAddress: deliveryAddress.trim(),
-      createdAt: new Date().toISOString(),
-    };
+      const newOrder = {
+          id: Date.now(),
+          orderNumber: `FM${Date.now()}`,
+          email: orderEmail,
+          customerName: user.isLoggedIn ? user.name : "Guest",
+          isGuestOrder: !user.isLoggedIn,
+          items: cart,
+          subtotal,
+          deliveryFee,
+          total,
+          status: "Placed",
+          deliveryAddress: deliveryAddress.trim(),
+          createdAt: new Date().toISOString(),
+      };
 
-    localStorage.setItem(
-      "feedme_orders",
-      JSON.stringify([newOrder, ...existingOrders])
-    );
+      localStorage.setItem(
+          "feedme_orders",
+          JSON.stringify([newOrder, ...existingOrders])
+      );
 
-    clearCart();
-    navigate("/orders");
+      if (!user.isLoggedIn) {
+          localStorage.setItem("feedme_guest_email", orderEmail);
+      }
+      clearCart();
+      navigate("/orders", {
+          state: {orderPlaced: true, orderNumber: newOrder.orderNumber},
+      });
   };
 
   return (
