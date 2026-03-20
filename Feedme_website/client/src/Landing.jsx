@@ -2,9 +2,9 @@ import React from "react";
 import {Link} from "react-router-dom";
 import "./App.css";
 import {useCart} from "./Cart";
+import CartDropdown from "./CartDropdown";
 
 export default function Landing() {
-    const {totalItems} = useCart();
     return (
         <div className="lm-shell">
             {/* TOP BAR */}
@@ -17,7 +17,7 @@ export default function Landing() {
                 />
 
                 <div className="lm-topbarRight">
-                    <div className="lm-cartBadge">Cart ({totalItems})</div>
+                    <CartDropdown />
                     <div className="lm-user">Fred Smith</div>
                 </div>
             </header>
