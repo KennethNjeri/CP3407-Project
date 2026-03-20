@@ -13,44 +13,55 @@ export function CartProvider({ children }) {
   }, [cart]);
 
   function addToCart(item) {
-    setCart((prevCart) => {
-      const existingItem = prevCart.find((cartItem) => cartItem.id === item.id);
-
-      if (existingItem) {
-        return prevCart.map((cartItem) =>
-          cartItem.id === item.id
-            ? { ...cartItem, quantity: cartItem.quantity + 1 }
-            : cartItem
-        );
-      }
-
-      return [
-        ...prevCart,
-        {
-          id: item.id,
-          name: item.name,
-          price: Number(item.price || 0),
-          quantity: 1,
-        },
-      ];
-    });
-  }
-
-  function decreaseQuantity(itemId) {
-    setCart((prevCart) =>
-      prevCart
-        .map((item) =>
-          item.id === itemId
-            ? { ...item, quantity: item.quantity - 1 }
-            : item
-        )
-        .filter((item) => item.quantity > 0)
+  setCart((prevCart) => {
+    const existingItem = prevCart.find(
+      (cartItem) =>
+        cartItem.id === item.id &&
+        cartItem.restaurant === item.restaurant
     );
-  }
 
-  function removeFromCart(itemId) {
-    setCart((prevCart) => prevCart.filter((item) => item.id !== itemId));
-  }
+    if (existingItem) {
+      return prevCart.map((cartItem) =>
+        cartItem.id === item.id &&
+        cartItem.restaurant === item.restaurant
+          ? { ...cartItem, quantity: cartItem.quantity + 1 }
+          : cartItem
+      );
+    }
+
+    return [
+      ...prevCart,
+      {
+        id: item.id,
+        name: item.name,
+        price: Number(item.price || 0),
+        quantity: 1,
+        restaurant: item.restaurant || "Unknown Restaurant",
+      },
+    ];
+  });
+}
+
+  function decreaseQuantity(itemId, restaurantName) {
+  setCart((prevCart) =>
+    prevCart
+      .map((item) =>
+        item.id === itemId && item.restaurant === restaurantName
+          ? { ...item, quantity: item.quantity - 1 }
+          : item
+      )
+      .filter((item) => item.quantity > 0)
+  );
+}
+
+  function removeFromCart(itemId, restaurantName) {
+  setCart((prevCart) =>
+    prevCart.filter(
+      (item) =>
+        !(item.id === itemId && item.restaurant === restaurantName)
+    )
+  );
+}
 
   function clearCart() {
     setCart([]);
