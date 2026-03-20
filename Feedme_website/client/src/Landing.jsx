@@ -8,7 +8,7 @@ import { useUser } from "./UserContext";
 
 
 export default function Landing() {
-    const { user } = useUser();
+    const { user, logout } = useUser();
     const navigate = useNavigate();
     return (
         <div className="lm-shell">
@@ -58,7 +58,15 @@ export default function Landing() {
                         <Link to="/settings" className="lm-navItem">Settings</Link>
                     </nav>
 
-                    <button className="lm-signout">Sign Out</button>
+                    <button
+                      className="lm-signout"
+                      onClick={() => {
+                        logout();
+                        navigate("/");
+                      }}
+                    >
+                      Sign Out
+                    </button>
                 </aside>
 
                 {/* MAIN CONTENT */}

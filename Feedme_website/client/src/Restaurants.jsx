@@ -17,7 +17,7 @@ export default function Restaurants() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
     const [totalPages, setTotalPages] = useState(0);
-    const { user } = useUser();
+    const { user, logout } = useUser();
 
     useEffect(() => {
         setSearch(q);
@@ -115,10 +115,13 @@ export default function Restaurants() {
                     <div className="lm-spacer"/>
 
                     <button
-                        className="lm-signout"
-                        onClick={() => alert("Hook this up to auth later")}
+                      className="lm-signout"
+                      onClick={() => {
+                        logout();
+                        navigate("/");
+                      }}
                     >
-                        Sign Out
+                      Sign Out
                     </button>
                 </aside>
 
