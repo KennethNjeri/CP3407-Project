@@ -142,6 +142,53 @@ app.post("/api/login", (req, res) => {
   );
 });
 
+
+app.post("/api/change-password", (req, res) => {
+  const { userId, currentPassword, newPassword } = req.body;
+
+  if (!userId || !currentPassword || !newPassword) {
+    return res.status(400).json({ message: "All fields are required." });
+  }
+
+  if (newPassword.length < 6) {
+    return res.status(400).json({ message: "New password must be at least 6 characters." });
+  }
+
+  db.query(
+    "SELECT user_id, password FROM Users WHERE user_id = ?",
+    [userId],
+    (err, results) => {
+      if (err) {
+        console.error("Error finding user for password change:", err);
+        return res.status(500).json({ message: "Server error while changing password." });
+      }
+
+      if (results.length === 0) {
+        return res.status(404).json({ message: "User not found." });
+      }
+
+      const user = results[0];
+
+      if (user.password !== currentPassword) {
+        return res.status(401).json({ message: "Current password is incorrect." });
+      }
+
+      db.query(
+        "UPDATE Users SET password = ? WHERE user_id = ?",
+        [newPassword, userId],
+        (err) => {
+          if (err) {
+            console.error("Error updating password:", err);
+            return res.status(500).json({ message: "Server error while updating password." });
+          }
+
+          res.json({ message: "Password updated successfully." });
+        }
+      );
+    }
+  );
+});
+
 // ================= RESTAURANT SEARCH =================
 
 app.get("/api/restaurants", (req, res) => {
