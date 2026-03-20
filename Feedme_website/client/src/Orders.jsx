@@ -1,80 +1,53 @@
 import React, { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import "./App.css";
+import CartDropdown from "./CartDropdown";
 import { useUser } from "./UserContext";
 
 export default function Orders() {
-  const [tab, setTab] = useState("all");
-  const [search, setSearch] = useState("");
-  const [sort, setSort] = useState("newest");
   const { user, logout } = useUser();
+  const [search, setSearch] = useState("");
+  const [filter, setFilter] = useState("newest");
 
-  // Dummy data for now
-  const orders = useMemo(
-    () => [
-      {
-        id: "4233732",
-        restaurant: "Noodle house",
-        items: "Pad Thai",
-        status: "delivered",
-        icon: "🍜",
-        date: "2026-03-02",
-      },
-      {
-        id: "726472836",
-        restaurant: "KFC",
-        items: "3 Piece box, 26 nuggets",
-        status: "active",
-        icon: "🍗",
-        date: "2026-03-03",
-      },
-      {
-        id: "38475829",
-        restaurant: "Pizza Hut",
-        items: "Margherita Pizza • Garlic bread",
-        status: "delivered",
-        icon: "🍕",
-        date: "2026-02-26",
-      },
-      {
-        id: "34857834",
-        restaurant: "Burrito bar",
-        items: "Beef burrito, Nachos",
-        status: "delivered",
-        icon: "🌯",
-        date: "2026-02-20",
-      },
-    ],
-    []
-  );
+  const allOrders = JSON.parse(localStorage.getItem("feedme_orders") || "[]");
 
-  const filtered = useMemo(() => {
-    const q = search.trim().toLowerCase();
+  const visibleOrders = useMemo(() => {
+    let orders = [...allOrders];
 
-    let list = orders;
-
-    if (tab !== "all") {
-      list = list.filter((o) => o.status === tab);
+    if (user.isLoggedIn) {
+      orders = orders.filter((order) => order.email === user.email);
     }
 
-    if (q) {
-      list = list.filter((o) => {
+    if (search.trim()) {
+      const term = search.toLowerCase();
+      orders = orders.filter((order) => {
+        const restaurantNames = order.items
+          .map((item) => item.restaurant || "")
+          .join(" ")
+          .toLowerCase();
+
+        const itemNames = order.items
+          .map((item) => item.name || "")
+          .join(" ")
+          .toLowerCase();
+
         return (
-          o.restaurant.toLowerCase().includes(q) ||
-          o.items.toLowerCase().includes(q) ||
-          o.id.toLowerCase().includes(q)
+          String(order.orderNumber).toLowerCase().includes(term) ||
+          restaurantNames.includes(term) ||
+          itemNames.includes(term)
         );
       });
     }
 
-    list = [...list].sort((a, b) => {
-      const da = new Date(a.date).getTime();
-      const db = new Date(b.date).getTime();
-      return sort === "newest" ? db - da : da - db;
+    orders.sort((a, b) => {
+      if (filter === "oldest") {
+        return new Date(a.createdAt) - new Date(b.createdAt);
+      }
+      return new Date(b.createdAt) - new Date(a.createdAt);
     });
 
-    return list;
-  }, [orders, tab, search, sort]);
+    return orders;
+  }, [allOrders, user, search, filter]);
 
   return (
     <div className="lm-shell">
@@ -83,9 +56,19 @@ export default function Orders() {
           FeedMe
         </Link>
 
-        <input className="lm-search" placeholder="" readOnly />
+        <div className="lm-topsearchForm">
+          <input
+            className="lm-search"
+            placeholder="Search orders"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
 
-        <div className="lm-user">{user.name}</div>
+        <div className="lm-topbarRight">
+          <CartDropdown />
+          <div className="lm-user">{user.name}</div>
+        </div>
       </header>
 
       <div className="lm-body">
@@ -102,7 +85,7 @@ export default function Orders() {
             <Link to="/saved" className="lm-navItem">
               Saved Restaurants
             </Link>
-            <Link to="/orders" className="lm-navItem lm-navItemActive">
+            <Link to="/orders" className="lm-navItem">
               Order History
             </Link>
             <Link to="/settings" className="lm-navItem">
@@ -112,95 +95,83 @@ export default function Orders() {
 
           <div className="lm-spacer" />
 
-          <button
-            className="lm-signout"
-            onClick={() => alert("Hook this up to auth later")}
-          >
+          <button className="lm-signout" onClick={logout}>
             Sign Out
           </button>
         </aside>
 
         <main className="lm-main">
-          <section className="lm-ordersHeaderCard">
+          <div className="orders-headerCard">
             <div>
-              <h1 className="lm-ordersTitle">Past Orders</h1>
-              <p className="lm-ordersSub">
-                Track, reorder, and review past deliveries
+              <h1 className="orders-title">Past Orders</h1>
+              <p className="orders-subtitle">
+                Track, reorder, and review your past deliveries
               </p>
             </div>
 
-            <div className="lm-ordersControls">
-              <div className="lm-ordersSearchWrap">
-                <span className="lm-ordersSearchIcon" aria-hidden="true">
-                  🔎
-                </span>
-                <input
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  placeholder="Search orders"
-                />
-              </div>
+            <div className="orders-controls">
+              <input
+                className="orders-search"
+                placeholder="Search orders"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
 
               <select
-                className="lm-ordersSelect"
-                value={sort}
-                onChange={(e) => setSort(e.target.value)}
+                className="orders-sort"
+                value={filter}
+                onChange={(e) => setFilter(e.target.value)}
               >
                 <option value="newest">Newest</option>
                 <option value="oldest">Oldest</option>
               </select>
             </div>
-          </section>
-
-          <div className="lm-ordersTabs">
-            <button
-              className={`lm-tab ${tab === "all" ? "lm-tabActive" : ""}`}
-              onClick={() => setTab("all")}
-            >
-              All Orders
-            </button>
-            <button
-              className={`lm-tab ${tab === "delivered" ? "lm-tabActive" : ""}`}
-              onClick={() => setTab("delivered")}
-            >
-              Delivered
-            </button>
-            <button
-              className={`lm-tab ${tab === "active" ? "lm-tabActive" : ""}`}
-              onClick={() => setTab("active")}
-            >
-              Active
-            </button>
           </div>
 
-          <div className="lm-ordersList">
-            {filtered.length === 0 ? (
-              <div className="lm-empty">No orders match that.</div>
-            ) : (
-              filtered.map((o) => (
-                <div key={o.id} className="lm-orderRow">
-                  <div className="lm-orderLeft">
-                    <div className="lm-orderIcon" aria-hidden="true">
-                      {o.icon}
+          {visibleOrders.length === 0 ? (
+            <div className="lm-empty">
+              No orders yet. Place an order from checkout to see it here.
+            </div>
+          ) : (
+            <div className="orders-list">
+              {visibleOrders.map((order) => {
+                const restaurantNames = [
+                  ...new Set(order.items.map((item) => item.restaurant)),
+                ].join(", ");
+
+                const itemSummary = order.items
+                  .map((item) => `${item.name} x${item.quantity}`)
+                  .join(", ");
+
+                return (
+                  <div key={order.id} className="order-card">
+                    <div className="order-cardLeft">
+                      <div className="order-icon">🍔</div>
+
+                      <div>
+                        <div className="order-restaurant">
+                          {restaurantNames || "Restaurant"}
+                        </div>
+                        <div className="order-number">{order.orderNumber}</div>
+                        <div className="order-items">{itemSummary}</div>
+                        <div className="order-meta">
+                          {new Date(order.createdAt).toLocaleString()} • $
+                          {Number(order.total || 0).toFixed(2)} • {order.status}
+                        </div>
+                      </div>
                     </div>
 
-                    <div className="lm-orderText">
-                      <div className="lm-orderName">{o.restaurant}</div>
-                      <div className="lm-orderMeta">Order {o.id}</div>
-                      <div className="lm-orderItems">{o.items}</div>
-                    </div>
+                    <button
+                      className="order-reorderBtn"
+                      onClick={() => alert("Reorder can be added next")}
+                    >
+                      Reorder
+                    </button>
                   </div>
-
-                  <button
-                    className="lm-reorderBtn"
-                    onClick={() => alert(`Reorder from ${o.restaurant} (TODO)`)}
-                  >
-                    Reorder
-                  </button>
-                </div>
-              ))
-            )}
-          </div>
+                );
+              })}
+            </div>
+          )}
         </main>
       </div>
     </div>

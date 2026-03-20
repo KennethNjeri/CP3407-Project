@@ -1,10 +1,245 @@
-import React from "react";
+import React, { useMemo, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import "./App.css";
+import CartDropdown from "./CartDropdown";
+import { useCart } from "./Cart";
+import { useUser } from "./UserContext";
 
 export default function Checkout() {
+  const navigate = useNavigate();
+  const { cart, subtotal, clearCart } = useCart();
+  const { user } = useUser();
+
+  const [guestEmail, setGuestEmail] = useState("");
+  const [deliveryAddress, setDeliveryAddress] = useState("");
+  const [cardName, setCardName] = useState("");
+  const [cardNumber, setCardNumber] = useState("");
+  const [expiry, setExpiry] = useState("");
+  const [cvv, setCvv] = useState("");
+  const [error, setError] = useState("");
+
+  const orderEmail = useMemo(() => {
+    return user.isLoggedIn ? user.email : guestEmail.trim();
+  }, [user, guestEmail]);
+
+  const deliveryFee = cart.length > 0 ? 4.99 : 0;
+  const total = subtotal + deliveryFee;
+
+  const handlePlaceOrder = (e) => {
+    e.preventDefault();
+
+    if (cart.length === 0) {
+      setError("Your cart is empty.");
+      return;
+    }
+
+    if (!user.isLoggedIn && !guestEmail.trim()) {
+      setError("Please enter an email for guest checkout.");
+      return;
+    }
+
+    if (!deliveryAddress.trim()) {
+      setError("Please enter a delivery address.");
+      return;
+    }
+
+    if (!cardName.trim() || !cardNumber.trim() || !expiry.trim() || !cvv.trim()) {
+      setError("Please enter your dummy payment details.");
+      return;
+    }
+
+    const existingOrders = JSON.parse(localStorage.getItem("feedme_orders") || "[]");
+
+    const newOrder = {
+      id: Date.now(),
+      orderNumber: `FM${Date.now()}`,
+      email: orderEmail,
+      customerName: user.isLoggedIn ? user.name : "Guest",
+      isGuestOrder: !user.isLoggedIn,
+      items: cart,
+      subtotal,
+      deliveryFee,
+      total,
+      status: "Placed",
+      deliveryAddress: deliveryAddress.trim(),
+      createdAt: new Date().toISOString(),
+    };
+
+    localStorage.setItem(
+      "feedme_orders",
+      JSON.stringify([newOrder, ...existingOrders])
+    );
+
+    clearCart();
+    navigate("/orders");
+  };
+
   return (
-    <div style={{ padding: "40px" }}>
-      <h1>Checkout</h1>
-      <p>This page will handle guest checkout and login later.</p>
+    <div className="lm-shell">
+      <header className="lm-topbar">
+        <Link to="/" className="lm-brandLink">
+          FeedMe
+        </Link>
+
+        <div className="lm-topsearchForm">
+          <input
+            className="lm-search"
+            placeholder="Search restaurants, cuisines, or dishes"
+            readOnly
+          />
+        </div>
+
+        <div className="lm-topbarRight">
+          <CartDropdown />
+          <div className="lm-user">{user.name}</div>
+        </div>
+      </header>
+
+      <div className="lm-body">
+        <aside className="lm-sidebar">
+          <div className="lm-deal">
+            <strong>New Deals Alert</strong>
+            <p>Complete your order and get food flying your way.</p>
+          </div>
+
+          <nav className="lm-nav">
+            <Link to="/restaurants" className="lm-navItem">
+              Explore Restaurants
+            </Link>
+            <Link to="/saved" className="lm-navItem">
+              Saved Restaurants
+            </Link>
+            <Link to="/orders" className="lm-navItem">
+              Order History
+            </Link>
+            <Link to="/settings" className="lm-navItem">
+              Settings
+            </Link>
+          </nav>
+        </aside>
+
+        <main className="lm-main">
+          <div className="checkout-layout">
+            <section className="checkout-formCard">
+              <h1>Checkout</h1>
+              <p>Review your details and place your order.</p>
+
+              {!user.isLoggedIn && (
+                <div className="checkout-authRow">
+                  <Link to="/login" className="checkout-linkBtn">
+                    Login
+                  </Link>
+                  <Link to="/register" className="checkout-linkBtn">
+                    Register
+                  </Link>
+                </div>
+              )}
+
+              <form onSubmit={handlePlaceOrder} className="checkout-form">
+                {!user.isLoggedIn && (
+                  <div className="checkout-section">
+                    <h3>Guest Details</h3>
+                    <input
+                      type="email"
+                      placeholder="Email address"
+                      value={guestEmail}
+                      onChange={(e) => setGuestEmail(e.target.value)}
+                    />
+                  </div>
+                )}
+
+                <div className="checkout-section">
+                  <h3>Delivery Details</h3>
+                  <input
+                    type="text"
+                    placeholder="Delivery address"
+                    value={deliveryAddress}
+                    onChange={(e) => setDeliveryAddress(e.target.value)}
+                  />
+                </div>
+
+                <div className="checkout-section">
+                  <h3>Dummy Payment Details</h3>
+                  <input
+                    type="text"
+                    placeholder="Name on card"
+                    value={cardName}
+                    onChange={(e) => setCardName(e.target.value)}
+                  />
+                  <input
+                    type="text"
+                    placeholder="Card number"
+                    value={cardNumber}
+                    onChange={(e) => setCardNumber(e.target.value)}
+                  />
+                  <div className="checkout-cardRow">
+                    <input
+                      type="text"
+                      placeholder="MM/YY"
+                      value={expiry}
+                      onChange={(e) => setExpiry(e.target.value)}
+                    />
+                    <input
+                      type="text"
+                      placeholder="CVV"
+                      value={cvv}
+                      onChange={(e) => setCvv(e.target.value)}
+                    />
+                  </div>
+                </div>
+
+                {error && <div className="checkout-error">{error}</div>}
+
+                <button type="submit" className="checkout-placeBtn">
+                  Place Order
+                </button>
+              </form>
+            </section>
+
+            <aside className="checkout-summaryCard">
+              <h2>Order Summary</h2>
+
+              {cart.length === 0 ? (
+                <p>Your cart is empty.</p>
+              ) : (
+                <>
+                  <div className="checkout-summaryList">
+                    {cart.map((item, index) => (
+                      <div
+                        key={`${item.id}-${item.restaurant}-${index}`}
+                        className="checkout-summaryItem"
+                      >
+                        <div>
+                          <strong>{item.name}</strong>
+                          <div className="checkout-muted">{item.restaurant}</div>
+                          <div className="checkout-muted">Qty: {item.quantity}</div>
+                        </div>
+
+                        <div>${(item.price * item.quantity).toFixed(2)}</div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="checkout-totalRow">
+                    <span>Subtotal</span>
+                    <strong>${subtotal.toFixed(2)}</strong>
+                  </div>
+
+                  <div className="checkout-totalRow">
+                    <span>Delivery Fee</span>
+                    <strong>${deliveryFee.toFixed(2)}</strong>
+                  </div>
+
+                  <div className="checkout-totalRow checkout-grandTotal">
+                    <span>Total</span>
+                    <strong>${total.toFixed(2)}</strong>
+                  </div>
+                </>
+              )}
+            </aside>
+          </div>
+        </main>
+      </div>
     </div>
   );
 }

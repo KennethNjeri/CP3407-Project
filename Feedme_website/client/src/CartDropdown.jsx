@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useCart } from "./Cart";
 import "./App.css";
-import { useNavigate } from "react-router-dom";
 
 export default function CartDropdown() {
   const cartRef = useRef(null);
