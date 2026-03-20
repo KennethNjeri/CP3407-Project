@@ -664,10 +664,12 @@
 .rm-user {
   font-weight: bold;
 }
+.rm navspacer{
+  flex:1
+}
 
 .rm-cartNav {
-  position: relative;
-  z-index: 200;
+  margin-left: auto;
 }
 
 .rm-cartNavBtn {
