@@ -599,3 +599,86 @@
   border-radius:8px;
   cursor:pointer;
 }
+
+
+.lm-navSpacer {
+  flex: 1;
+}
+
+.lm-topbar {
+  background: #f4a14c;
+  color: white;
+  height: 55px;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  gap: 14px;
+  position: relative;
+  z-index: 100;
+}
+
+.lm-user {
+  font-weight: bold;
+}
+
+.lm-cartNav {
+  position: relative;
+  z-index: 200;
+}
+
+.lm-cartNavBtn {
+  background: white;
+  color: #111827;
+  border: none;
+  border-radius: 999px;
+  padding: 8px 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.lm-cartDropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  width: 340px;
+  max-height: 70vh;
+  overflow-y: auto;
+  background: white;
+  color: #111827;
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+}
+
+.lm-cartList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.lm-cartItem {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+  align-items: start;
+}
+
+.lm-cartActions {
+  display: flex;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.lm-cartActions button {
+  border: none;
+  border-radius: 8px;
+  padding: 4px 10px;
+  cursor: pointer;
+}
+
+.lm-cartSummary {
+  display: flex;
+  justify-content: space-between;
+  margin: 12px 0;
+}
