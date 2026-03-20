@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import {Link, useNavigate, useSearchParams} from "react-router-dom";
 import "./App.css";
 import {useCart} from "./Cart";
+import CartDropdown from "./CartDropdown";
 
 export default function Restaurants() {
     const navigate = useNavigate();
@@ -10,7 +11,6 @@ export default function Restaurants() {
     const q = (params.get("q") || "").trim();
     const rawPage = Number(params.get("page") || 1);
     const page = rawPage > 0 ? rawPage : 1;
-    const {totalItems} = useCart();
     const [search, setSearch] = useState(q);
     const [restaurants, setRestaurants] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -83,7 +83,7 @@ export default function Restaurants() {
                 </form>
 
                 <div className="lm-topbarRight">
-                    <div className="lm-cartBadge">Cart ({totalItems})</div>
+                    <CartDropdown />
                     <div className="lm-user">Fred Smith</div>
                 </div>
             </header>
