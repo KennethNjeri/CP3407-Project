@@ -673,6 +673,7 @@
 }
 
 .rm-cartNavBtn {
+  height: 36px;
   background: white;
   color: #111827;
   border: none;
