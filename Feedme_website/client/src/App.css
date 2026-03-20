@@ -1069,6 +1069,24 @@ nav {
   color: #b42318;
 }
 
+.settings-infoRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 0;
+  border-bottom: 1px solid #eceff5;
+}
+
+.settings-label {
+  font-weight: 700;
+  color: #374151;
+}
+
+.settings-value {
+  color: #111827;
+  text-align: right;
+}
+
 @media (max-width: 1100px) {
   .lm-resultsGrid {
     grid-template-columns: repeat(2, minmax(240px, 1fr));
