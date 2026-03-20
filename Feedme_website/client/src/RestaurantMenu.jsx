@@ -86,21 +86,21 @@ export default function RestaurantMenu() {
 
   return (
     <div className="lm-shell">
-      <header className="lm-topbar">
-  <Link to="/" className="lm-brandLink">FeedMe</Link>
+      <header className="rm-topbar">
+  <Link to="/" className="rm-brandLink">FeedMe</Link>
 
-  <div className="lm-navSpacer" />
+  <div className="rm-navSpacer" />
 
-  <div className="lm-cartNav" ref={cartRef}>
+  <div className="rm-cartNav" ref={cartRef}>
     <button
-      className="lm-cartNavBtn"
+      className="rm-cartNavBtn"
       onClick={() => setCartOpen((prev) => !prev)}
     >
       Cart ({totalItems})
     </button>
 
     {cartOpen && (
-      <div className="lm-cartDropdown">
+      <div className="rm-cartDropdown">
         <h2>Your Cart</h2>
         <p>{totalItems} item{totalItems !== 1 ? "s" : ""}</p>
 
@@ -146,7 +146,7 @@ export default function RestaurantMenu() {
     )}
   </div>
 
-  <div className="lm-user">Fred Smith</div>
+  <div className="rm-user">Fred Smith</div>
 </header>
       <main className="lm-main">
         <div className="lm-restaurantHeader">
