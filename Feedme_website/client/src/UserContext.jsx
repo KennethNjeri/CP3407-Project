@@ -4,8 +4,12 @@ const UserContext = createContext();
 
 const defaultGuestUser = {
   isLoggedIn: false,
+  user_id: null,
+  firstName: "Guest",
+  lastName: "",
   name: "Guest",
   email: "",
+  role: "customer",
 };
 
 export function UserProvider({ children }) {
@@ -19,10 +23,17 @@ export function UserProvider({ children }) {
   }, [user]);
 
   function login(userData) {
+    const firstName = userData.f_name || userData.firstName || "";
+    const lastName = userData.l_name || userData.lastName || "";
+
     setUser({
       isLoggedIn: true,
-      name: userData.name || "User",
+      user_id: userData.user_id || null,
+      firstName,
+      lastName,
+      name: `${firstName} ${lastName}`.trim() || "User",
       email: userData.email || "",
+      role: userData.role || "customer",
     });
   }
 
@@ -31,18 +42,13 @@ export function UserProvider({ children }) {
   }
 
   function logout() {
+    localStorage.removeItem("feedme_user");
+    localStorage.removeItem("feedme_guest_email");
     setUser(defaultGuestUser);
-  }
+}
 
   return (
-    <UserContext.Provider
-      value={{
-        user,
-        login,
-        logout,
-        continueAsGuest,
-      }}
-    >
+    <UserContext.Provider value={{ user, login, logout, continueAsGuest }}>
       {children}
     </UserContext.Provider>
   );
