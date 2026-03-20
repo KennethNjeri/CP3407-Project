@@ -4,6 +4,7 @@ import "./App.css";
 import CartDropdown from "./CartDropdown";
 import { useUser } from "./UserContext";
 import { useCart } from "./Cart";
+import UserMenu from "./UserMenu";
 
 export default function Orders() {
   const { user, logout } = useUser();
@@ -76,7 +77,7 @@ export default function Orders() {
 
         <div className="lm-topbarRight">
           <CartDropdown />
-          <div className="lm-user">{user.name}</div>
+          <UserMenu />
         </div>
       </header>
 

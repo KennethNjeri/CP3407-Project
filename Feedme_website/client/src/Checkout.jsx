@@ -4,6 +4,7 @@ import "./App.css";
 import CartDropdown from "./CartDropdown";
 import { useCart } from "./Cart";
 import { useUser } from "./UserContext";
+import UserMenu from "./UserMenu";
 
 export default function Checkout() {
   const navigate = useNavigate();
@@ -96,7 +97,7 @@ export default function Checkout() {
 
         <div className="lm-topbarRight">
           <CartDropdown />
-          <div className="lm-user">{user.name}</div>
+          <UserMenu />
         </div>
       </header>
 

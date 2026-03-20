@@ -4,6 +4,7 @@ import "./App.css";
 import {useCart} from "./Cart";
 import CartDropdown from "./CartDropdown";
 import { useUser } from "./UserContext";
+import UserMenu from "./UserMenu";
 
 export default function Restaurants() {
     const navigate = useNavigate();
@@ -86,7 +87,7 @@ export default function Restaurants() {
 
                 <div className="lm-topbarRight">
                     <CartDropdown />
-                    <div className="lm-user">{user.name}</div>
+                    <UserMenu />
                 </div>
             </header>
 

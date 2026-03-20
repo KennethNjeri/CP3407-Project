@@ -4,6 +4,7 @@ import "./App.css";
 import {useCart} from "./Cart";
 import CartDropdown from "./CartDropdown";
 import { useUser } from "./UserContext";
+import UserMenu from "./UserMenu";
 
 
 
@@ -37,7 +38,7 @@ export default function Landing() {
 
                 <div className="lm-topbarRight">
                     <CartDropdown />
-                    <div className="lm-user">{user.name}</div>
+                    <UserMenu />
                 </div>
             </header>
 
