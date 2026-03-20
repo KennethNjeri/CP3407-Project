@@ -4,21 +4,34 @@ import Landing from "./Landing";
 import Restaurants from "./Restaurants";
 import Orders from "./Orders";
 import RestaurantMenu from "./RestaurantMenu";
+import Login from "./Login";
+import SavedRestaurants from "./SavedRestaurants";
+import Settings from "./Settings";
+import Checkout from "./Checkout";
+import Register from "./Register";
 import { CartProvider } from "./Cart";
+import { UserProvider } from "./UserContext";
 import "./App.css";
 
 function App() {
   return (
-    <CartProvider>
-      <Router>
-        <Routes>
-          <Route path="/" element={<Landing />} />
-          <Route path="/restaurants" element={<Restaurants />} />
-          <Route path="/orders" element={<Orders />} />
-          <Route path="/restaurants/:id" element={<RestaurantMenu />} />
-        </Routes>
-      </Router>
-    </CartProvider>
+    <UserProvider>
+      <CartProvider>
+        <Router>
+          <Routes>
+            <Route path="/" element={<Landing />} />
+            <Route path="/restaurants" element={<Restaurants />} />
+            <Route path="/orders" element={<Orders />} />
+            <Route path="/restaurants/:id" element={<RestaurantMenu />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/saved" element={<SavedRestaurants />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="/checkout" element={<Checkout />} />
+          </Routes>
+        </Router>
+      </CartProvider>
+    </UserProvider>
   );
 }
 

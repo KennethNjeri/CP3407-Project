@@ -1,11 +1,13 @@
 import React, { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import "./App.css";
+import { useUser } from "./UserContext";
 
 export default function Orders() {
   const [tab, setTab] = useState("all");
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("newest");
+  const { user, logout } = useUser();
 
   // Dummy data for now
   const orders = useMemo(
@@ -83,7 +85,7 @@ export default function Orders() {
 
         <input className="lm-search" placeholder="" readOnly />
 
-        <div className="lm-user">Fred Smith</div>
+        <div className="lm-user">{user.name}</div>
       </header>
 
       <div className="lm-body">

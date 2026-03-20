@@ -3,8 +3,12 @@ import {Link} from "react-router-dom";
 import "./App.css";
 import {useCart} from "./Cart";
 import CartDropdown from "./CartDropdown";
+import { useUser } from "./UserContext";
+
+
 
 export default function Landing() {
+    const { user } = useUser();
     return (
         <div className="lm-shell">
             {/* TOP BAR */}
@@ -18,7 +22,7 @@ export default function Landing() {
 
                 <div className="lm-topbarRight">
                     <CartDropdown />
-                    <div className="lm-user">Fred Smith</div>
+                    <div className="lm-user">{user.name}</div>
                 </div>
             </header>
 
@@ -34,9 +38,9 @@ export default function Landing() {
                         <Link to="/restaurants" className="lm-navItem">
                             Explore Restaurants
                         </Link>
-                        <div className="lm-navItem">Saved Restaurants</div>
+                        <Link to="/saved" className="lm-navItem">Saved Restaurants</Link>
                         <Link to="/orders" className="lm-navItem">Order History</Link>
-                        <div className="lm-navItem">Settings</div>
+                        <Link to="/settings" className="lm-navItem">Settings</Link>
                     </nav>
 
                     <button className="lm-signout">Sign Out</button>
