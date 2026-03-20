@@ -12,25 +12,28 @@ import Checkout from "./Checkout";
 import { CartProvider } from "./Cart";
 import { UserProvider } from "./UserContext";
 import "./App.css";
+import { SavedProvider } from "./SavedContext";
 
 function App() {
   return (
     <UserProvider>
-      <CartProvider>
-        <Router>
-          <Routes>
-            <Route path="/" element={<Landing />} />
-            <Route path="/restaurants" element={<Restaurants />} />
-            <Route path="/orders" element={<Orders />} />
-            <Route path="/restaurants/:id" element={<RestaurantMenu />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/saved" element={<SavedRestaurants />} />
-            <Route path="/settings" element={<Settings />} />
-            <Route path="/checkout" element={<Checkout />} />
-          </Routes>
-        </Router>
-      </CartProvider>
+      <SavedProvider>
+        <CartProvider>
+          <Router>
+            <Routes>
+              <Route path="/" element={<Landing />} />
+              <Route path="/restaurants" element={<Restaurants />} />
+              <Route path="/orders" element={<Orders />} />
+              <Route path="/restaurants/:id" element={<RestaurantMenu />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/saved" element={<SavedRestaurants />} />
+              <Route path="/settings" element={<Settings />} />
+              <Route path="/checkout" element={<Checkout />} />
+            </Routes>
+          </Router>
+        </CartProvider>
+      </SavedProvider>
     </UserProvider>
   );
 }
