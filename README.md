@@ -44,7 +44,7 @@ Total: YY days
 1. [user story title](./user_stories/user_story_01_title.md), priority XX, YY days 
 2. ...
 
-1. https://github.com/KoenMeecham/CP3407-Project/blob/main/user_stories/iteration1_user_stories/User_story_01_create_landing_page.md
+1. [Create Landing page](./user_stories/iteration1_user_stories/User_story_01_create_landing_page.md)
 2. https://github.com/KoenMeecham/CP3407-Project/blob/main/user_stories/iteration1_user_stories/user_story_02_Create_a_search_page.md
 3. https://github.com/KoenMeecham/CP3407-Project/blob/main/user_stories/iteration1_user_stories/user_story_03_Create_an_orders_page.md
 4. https://github.com/KoenMeecham/CP3407-Project/blob/main/user_stories/iteration1_user_stories/user_story_04_admin_login.md
