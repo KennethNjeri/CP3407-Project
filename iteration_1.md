@@ -9,7 +9,7 @@ Checklist:
 * Total estimated amount of work: 32 days
 
 User stories or tasks (see chapter 4):
-1. [Create a landidng page](./user_stories/iteration1_user_stories/User_story_01_create_landing_page.md), priority XX, YY days 
+1. [Create a landing page](./user_stories/iteration1_user_stories/User_story_01_create_landing_page.md), priority XX, YY days 
 2. ...
 
 In progress:
