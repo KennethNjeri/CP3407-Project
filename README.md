@@ -44,6 +44,23 @@ Total: YY days
 1. [user story title](./user_stories/user_story_01_title.md), priority XX, YY days 
 2. ...
 
+1. https://github.com/KoenMeecham/CP3407-Project/blob/main/user_stories/iteration1_user_stories/User_story_01_create_landing_page.md
+2. https://github.com/KoenMeecham/CP3407-Project/blob/main/user_stories/iteration1_user_stories/user_story_02_Create_a_search_page.md
+3. https://github.com/KoenMeecham/CP3407-Project/blob/main/user_stories/iteration1_user_stories/user_story_03_Create_an_orders_page.md
+4. https://github.com/KoenMeecham/CP3407-Project/blob/main/user_stories/iteration1_user_stories/user_story_04_admin_login.md
+5. https://github.com/KoenMeecham/CP3407-Project/blob/main/user_stories/iteration1_user_stories/user_story_05_user_registration.md
+6. https://github.com/KoenMeecham/CP3407-Project/blob/main/user_stories/iteration1_user_stories/user_story_06_restaurant_menu.md
+7. https://github.com/KoenMeecham/CP3407-Project/blob/main/user_stories/iteration1_user_stories/user_story_07_Shopping_cart_management.md
+8. https://github.com/KoenMeecham/CP3407-Project/blob/main/user_stories/iteration1_user_stories/user_story_08_Restaurant_account_setup.md
+9. https://github.com/KoenMeecham/CP3407-Project/blob/main/user_stories/iteration1_user_stories/user_story_09_Place_order.md
+10. https://github.com/KoenMeecham/CP3407-Project/blob/main/user_stories/iteration1_user_stories/user_story_10_Online_payment.md
+11. https://github.com/KoenMeecham/CP3407-Project/blob/main/user_stories/iteration1_user_stories/user_story_11_Browse_restaurants.md
+12. https://github.com/KoenMeecham/CP3407-Project/blob/main/user_stories/iteration1_user_stories/user_story_12_Receive_new_orders.md
+13. https://github.com/KoenMeecham/CP3407-Project/blob/main/user_stories/iteration1_user_stories/user_story_13_AWS_host.md
+14. https://github.com/KoenMeecham/CP3407-Project/blob/main/user_stories/iteration1_user_stories/user_story_14_configure_RDS_db.md
+15. https://github.com/KoenMeecham/CP3407-Project/blob/main/user_stories/user_story_15_Show_current_deals.md
+
+
 Total: YY days
 
 
