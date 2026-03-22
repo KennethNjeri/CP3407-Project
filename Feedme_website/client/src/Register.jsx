@@ -3,25 +3,29 @@ import { Link, useNavigate } from "react-router-dom";
 import "./App.css";
 import { useUser } from "./UserContext";
 
-export default function Login() {
+export default function Register() {
   const navigate = useNavigate();
   const { login } = useUser();
 
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  const handleLogin = async (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
     setError("");
 
     try {
-      const res = await fetch("/api/login", {
+      const res = await fetch("/api/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
+          firstName,
+          lastName,
           email,
           password,
         }),
@@ -30,7 +34,7 @@ export default function Login() {
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.message || "Login failed.");
+        setError(data.message || "Registration failed.");
         return;
       }
 
@@ -38,15 +42,27 @@ export default function Login() {
       navigate("/");
     } catch (err) {
       console.error(err);
-      setError("Could not login.");
+      setError("Could not register user.");
     }
   };
 
   return (
     <div className="lm-shell">
       <div style={{ maxWidth: "500px", margin: "60px auto", background: "#fff", padding: "30px", borderRadius: "16px" }}>
-        <h1>Login</h1>
-        <form onSubmit={handleLogin} className="checkout-form">
+        <h1>Register</h1>
+        <form onSubmit={handleRegister} className="checkout-form">
+          <input
+            type="text"
+            placeholder="First name"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+          />
+          <input
+            type="text"
+            placeholder="Last name"
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
+          />
           <input
             type="email"
             placeholder="Email"
@@ -63,12 +79,12 @@ export default function Login() {
           {error && <div className="checkout-error">{error}</div>}
 
           <button type="submit" className="checkout-placeBtn">
-            Login
+            Create Account
           </button>
         </form>
 
         <p style={{ marginTop: "16px" }}>
-          Need an account? <Link to="/register">Register</Link>
+          Already have an account? <Link to="/login">Login</Link>
         </p>
       </div>
     </div>

@@ -38,6 +38,157 @@ function parsePositiveInt(value, fallback) {
   return Number.isInteger(parsed) && parsed > 0 ? parsed : fallback;
 }
 
+
+// ================= AUTH =================
+
+app.post("/api/register", (req, res) => {
+  const { firstName, lastName, email, password } = req.body;
+
+  if (!firstName || !lastName || !email || !password) {
+    return res.status(400).json({ message: "All fields are required." });
+  }
+
+  db.query(
+    "SELECT user_id FROM Users WHERE email = ?",
+    [email],
+    (err, existingResults) => {
+      if (err) {
+        console.error("Error checking existing user:", err);
+        return res.status(500).json({ message: "Server error during registration." });
+      }
+
+      if (existingResults.length > 0) {
+        return res.status(409).json({ message: "Email already registered." });
+      }
+
+      db.query(
+        `
+        INSERT INTO Users (f_name, l_name, email, password, role)
+        VALUES (?, ?, ?, ?, 'customer')
+        `,
+        [firstName, lastName, email, password],
+        (err, insertResult) => {
+          if (err) {
+            console.error("Error inserting user:", err);
+            return res.status(500).json({ message: "Server error during registration." });
+          }
+
+          db.query(
+            `
+            SELECT user_id, f_name, l_name, email, role
+            FROM Users
+            WHERE user_id = ?
+            `,
+            [insertResult.insertId],
+            (err, userResults) => {
+              if (err) {
+                console.error("Error fetching new user:", err);
+                return res.status(500).json({ message: "User created, but failed to fetch profile." });
+              }
+
+              res.status(201).json({
+                message: "User registered successfully.",
+                user: userResults[0],
+              });
+            }
+          );
+        }
+      );
+    }
+  );
+});
+
+app.post("/api/login", (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(400).json({ message: "Email and password are required." });
+  }
+
+  db.query(
+    `
+    SELECT user_id, f_name, l_name, email, password, role
+    FROM Users
+    WHERE email = ?
+    `,
+    [email],
+    (err, results) => {
+      if (err) {
+        console.error("Error logging in:", err);
+        return res.status(500).json({ message: "Server error during login." });
+      }
+
+      if (results.length === 0) {
+        return res.status(401).json({ message: "Invalid email or password." });
+      }
+
+      const user = results[0];
+
+      if (user.password !== password) {
+        return res.status(401).json({ message: "Invalid email or password." });
+      }
+
+      res.json({
+        message: "Login successful.",
+        user: {
+          user_id: user.user_id,
+          f_name: user.f_name,
+          l_name: user.l_name,
+          email: user.email,
+          role: user.role,
+        },
+      });
+    }
+  );
+});
+
+
+app.post("/api/change-password", (req, res) => {
+  const { userId, currentPassword, newPassword } = req.body;
+
+  if (!userId || !currentPassword || !newPassword) {
+    return res.status(400).json({ message: "All fields are required." });
+  }
+
+  if (newPassword.length < 6) {
+    return res.status(400).json({ message: "New password must be at least 6 characters." });
+  }
+
+  db.query(
+    "SELECT user_id, password FROM Users WHERE user_id = ?",
+    [userId],
+    (err, results) => {
+      if (err) {
+        console.error("Error finding user for password change:", err);
+        return res.status(500).json({ message: "Server error while changing password." });
+      }
+
+      if (results.length === 0) {
+        return res.status(404).json({ message: "User not found." });
+      }
+
+      const user = results[0];
+
+      if (user.password !== currentPassword) {
+        return res.status(401).json({ message: "Current password is incorrect." });
+      }
+
+      db.query(
+        "UPDATE Users SET password = ? WHERE user_id = ?",
+        [newPassword, userId],
+        (err) => {
+          if (err) {
+            console.error("Error updating password:", err);
+            return res.status(500).json({ message: "Server error while updating password." });
+          }
+
+          res.json({ message: "Password updated successfully." });
+        }
+      );
+    }
+  );
+});
+
 // ================= RESTAURANT SEARCH =================
 
 app.get("/api/restaurants", (req, res) => {

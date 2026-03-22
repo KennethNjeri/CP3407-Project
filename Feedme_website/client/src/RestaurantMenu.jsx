@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import { useCart } from "./Cart";
 import CartDropdown from "./CartDropdown";
 import "./App.css";
+import UserMenu from "./UserMenu";
 
 export default function RestaurantMenu() {
   const { id } = useParams();
@@ -42,7 +43,7 @@ export default function RestaurantMenu() {
 
         <CartDropdown />
 
-        <div className="lm-user">Fred Smith</div>
+        <UserMenu />
       </header>
 
       <main className="lm-main">
