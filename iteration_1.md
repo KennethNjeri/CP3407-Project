@@ -23,7 +23,6 @@ User stories or tasks (see chapter 4):
 12. [Receive new orders](./user_stories/iteration1_user_stories/user_story_12_Receive_new_orders.md), priority 10, 1 day.
 13. [AWS host](./user_stories/iteration1_user_stories/user_story_13_AWS_host.md), priority 10, 1 day.
 14. [RDS_DB](./user_stories/iteration1_user_stories/user_story_14_configure_RDS_db.md), priority 10, 1 day.
-15. [Create a landing page](./user_stories/iteration1_user_stories/user_story_15_Show_current_deals.md), priority 10, 1 day.
 
 In progress:
 * Task-2 (developer name or initials), date started
